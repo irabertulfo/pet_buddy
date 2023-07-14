@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "762424790053",
+    "firebase_url": "https://pet-buddy-251d5-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pet-buddy-251d5",
+    "storage_bucket": "pet-buddy-251d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:762424790053:android:67f7ea66a4cd1d3471c3cc",
+        "android_client_info": {
+          "package_name": "com.example.pet_buddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "762424790053-2iadc1djbr66loil45brd9crccff241j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYXY3OFGkowExrtRR3yZjKBrKelOncXz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "762424790053-2iadc1djbr66loil45brd9crccff241j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
