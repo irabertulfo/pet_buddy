@@ -1,13 +1,40 @@
 import 'package:flutter/material.dart';
 
+import 'package:pet_buddy/controller/login/login_controller.dart';
+import 'package:pet_buddy/utils/toast.dart';
+
 import '../../constants/image_paths.dart';
 import '../../constants/sizes.dart';
 import '../../constants/texts.dart';
 
-class LoginFooter extends StatelessWidget {
+class LoginFooter extends StatefulWidget {
   const LoginFooter({
     super.key,
   });
+
+  @override
+  State<LoginFooter> createState() => _LoginFooterState();
+}
+
+class _LoginFooterState extends State<LoginFooter> {
+  final LoginController loginController = LoginController();
+  bool _isLoading = false;
+
+  Future<void> _performGoogleSignIn(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await loginController.signInWithGoogle(context);
+    } catch (e) {
+      Toast.show(context, gmailNotRegistered);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +49,10 @@ class LoginFooter extends StatelessWidget {
               image: AssetImage(googleLogoImage),
               width: buttonPrimaryHeight / 3,
             ),
-            onPressed: () {},
-            label: const Text(signInWithGoogle),
+            onPressed: _isLoading ? null : () => _performGoogleSignIn(context),
+            label: _isLoading
+                ? const CircularProgressIndicator()
+                : Text(login.toUpperCase()),
           ),
         ),
         const SizedBox(

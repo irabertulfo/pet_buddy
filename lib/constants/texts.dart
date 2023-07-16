@@ -9,3 +9,8 @@ const String login = "Login";
 const String signInWithGoogle = "Sign-in with Google";
 const String alreadyHaveAccount = "Already have an account?";
 const String signUp = " Sign-up";
+
+// Toasts
+const String vagueError = "An error occurred. Please try again later.";
+const String gmailNotRegistered =
+    "Sign in with Google failed. Please register your GMail";

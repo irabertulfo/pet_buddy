@@ -1,12 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:pet_buddy/controller/login/login_controller.dart';
 
 import '../../constants/sizes.dart';
 import '../../constants/texts.dart';
+import '../../utils/toast.dart';
 
-class LoginForm extends StatelessWidget {
-  const LoginForm({
-    super.key,
-  });
+class LoginForm extends StatefulWidget {
+  const LoginForm({Key? key}) : super(key: key);
+
+  @override
+  LoginFormState createState() => LoginFormState();
+}
+
+class LoginFormState extends State<LoginForm> {
+  final LoginController loginController = LoginController();
+  final TextEditingController emailTextController = TextEditingController();
+  final TextEditingController passwordTextController = TextEditingController();
+  bool _isLoading = false;
+  bool _showPassword = false;
+
+  @override
+  void dispose() {
+    emailTextController.dispose();
+    passwordTextController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _performLogin(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await loginController.signInWithEmail(
+        context,
+        emailTextController.text,
+        passwordTextController.text,
+      );
+    } catch (e) {
+      Toast.show(context, vagueError);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,25 +54,37 @@ class LoginForm extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextFormField(
+            TextField(
+              controller: emailTextController,
               decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.person_outline_outlined),
-                  labelText: email,
-                  hintText: email,
-                  border: OutlineInputBorder()),
+                prefixIcon: Icon(Icons.person_outline_outlined),
+                labelText: email,
+                hintText: email,
+                border: OutlineInputBorder(),
+              ),
             ),
             const SizedBox(height: formHeight),
-            TextFormField(
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.fingerprint),
-                labelText: password,
-                hintText: password,
-                border: OutlineInputBorder(),
+            TextField(
+              controller: passwordTextController,
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.lock),
+                labelText: 'Password',
+                hintText: 'Enter your password',
+                border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  onPressed: null,
-                  icon: Icon(Icons.remove_red_eye_sharp),
+                  onPressed: () {
+                    setState(() {
+                      _showPassword = !_showPassword;
+                    });
+                  },
+                  icon: Icon(
+                      _showPassword ? Icons.visibility : Icons.visibility_off),
                 ),
               ),
+              obscureText: !_showPassword,
+              onSubmitted: (_) {
+                _performLogin(context);
+              },
             ),
             const SizedBox(height: formHeight - 20),
             Align(
@@ -48,8 +98,10 @@ class LoginForm extends StatelessWidget {
               height: buttonPrimaryHeight,
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
-                child: Text(login.toUpperCase()),
+                onPressed: _isLoading ? null : () => _performLogin(context),
+                child: _isLoading
+                    ? const CircularProgressIndicator()
+                    : Text(login.toUpperCase()),
               ),
             )
           ],
