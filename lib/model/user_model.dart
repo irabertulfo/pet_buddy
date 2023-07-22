@@ -14,6 +14,17 @@ class UserModel {
     required this.profileImagePath,
     required this.userType,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'profileImagePath': profileImagePath,
+      'userType': userType,
+    };
+  }
 }
 
 class UserSingleton {

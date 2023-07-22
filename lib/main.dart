@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_buddy/view/login/login_screen.dart';
 import "config/firebase_options.dart";
 
@@ -8,6 +9,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await Permission.camera.request();
+  await Permission.storage.request();
 
   runApp(const MyApp());
 }

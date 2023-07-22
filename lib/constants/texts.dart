@@ -7,8 +7,15 @@ const String password = "Password";
 const String forgotPassword = "Forgot Password?";
 const String login = "Login";
 const String signInWithGoogle = "Sign-in with Google";
-const String alreadyHaveAccount = "Already have an account?";
+const String alreadyHaveAccount = "Don't have an account?";
 const String signUp = " Sign-up";
+
+// Sign-up Page
+const String signUpTitle = "Sign-up";
+const String firstName = "First Name";
+const String lastName = "Last Name";
+const String back = "Back";
+const String signUpSuccessful = "Signed-up successfully!";
 
 // Toasts
 const String vagueError = "An error occurred. Please try again later.";

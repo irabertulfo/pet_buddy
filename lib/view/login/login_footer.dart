@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:pet_buddy/controller/login/login_controller.dart';
 import 'package:pet_buddy/utils/toast.dart';
+import 'package:pet_buddy/view/sign-up/sign_up_screen.dart';
+import 'package:pet_buddy/utils/page_transition.dart';
 
-import '../../constants/image_paths.dart';
-import '../../constants/sizes.dart';
-import '../../constants/texts.dart';
+import 'package:pet_buddy/constants/image_paths.dart';
+import 'package:pet_buddy/constants/sizes.dart';
+import 'package:pet_buddy/constants/texts.dart';
 
 class LoginFooter extends StatefulWidget {
   const LoginFooter({
@@ -52,14 +54,16 @@ class _LoginFooterState extends State<LoginFooter> {
             onPressed: _isLoading ? null : () => _performGoogleSignIn(context),
             label: _isLoading
                 ? const CircularProgressIndicator()
-                : Text(login.toUpperCase()),
+                : const Text(signInWithGoogle),
           ),
         ),
         const SizedBox(
           height: formHeight - 20.0,
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            PageTransition.pushUpNavigation(context, const SignUpScreen());
+          },
           child: Text.rich(
             TextSpan(
               text: alreadyHaveAccount,

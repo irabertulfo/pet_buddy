@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pet_buddy/model/user_model.dart';
 
 class FirestoreDatabase {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -17,6 +18,17 @@ class FirestoreDatabase {
       return userDocument;
     } catch (e) {
       return null;
+    }
+  }
+
+  Future<void> createNewUser(UserModel newUser) async {
+    try {
+      CollectionReference usersCollection =
+          FirebaseFirestore.instance.collection(_userCollection);
+
+      await usersCollection.doc(newUser.uid).set(newUser.toMap());
+    } catch (e) {
+      return;
     }
   }
 }
