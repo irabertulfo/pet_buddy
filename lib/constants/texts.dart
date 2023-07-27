@@ -21,3 +21,6 @@ const String signUpSuccessful = "Signed-up successfully!";
 const String vagueError = "An error occurred. Please try again later.";
 const String gmailNotRegistered =
     "Sign in with Google failed. Please register your GMail";
+
+// Home
+const String appTitle = "Pet Buddy";

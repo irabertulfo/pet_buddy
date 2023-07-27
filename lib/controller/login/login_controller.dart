@@ -9,7 +9,9 @@ import 'package:pet_buddy/constants/texts.dart';
 import 'package:pet_buddy/model/user_model.dart';
 import 'package:pet_buddy/utils/firebase_storage.dart';
 import 'package:pet_buddy/utils/firestore_database.dart';
+import 'package:pet_buddy/utils/page_transition.dart';
 import 'package:pet_buddy/utils/toast.dart';
+import 'package:pet_buddy/view/home/client/home_client_screen.dart';
 
 class LoginController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -41,6 +43,19 @@ class LoginController {
         );
 
         userSingleton.setUser(loggedInUser);
+
+        if (userSingleton.user?.userType == "user") {
+          PageTransition.pushRightNavigation(context, HomeClientScreen());
+          Toast.show(context,
+              "Login success! Welcome ${userSingleton.user?.firstName}.");
+        } else if (userSingleton.user?.userType == "admin") {
+          PageTransition.pushRightNavigation(context, HomeClientScreen());
+          Toast.show(context,
+              "Admin login success! Welcome ${userSingleton.user?.firstName}.");
+        } else {
+          Toast.show(context,
+              "User error. User has incomplete details. Please sign-up.");
+        }
       }
     } catch (error) {
       if (error is FirebaseAuthException) {
@@ -123,6 +138,19 @@ class LoginController {
           );
 
           userSingleton.setUser(loggedInUser);
+
+          if (userSingleton.user?.userType == "user") {
+            PageTransition.pushRightNavigation(context, HomeClientScreen());
+            Toast.show(context,
+                "Login success! Welcome ${userSingleton.user?.firstName}.");
+          } else if (userSingleton.user?.userType == "admin") {
+            PageTransition.pushRightNavigation(context, HomeClientScreen());
+            Toast.show(context,
+                "Admin login success! Welcome ${userSingleton.user?.firstName}.");
+          } else {
+            Toast.show(context,
+                "User error. User has incomplete details. Please sign-up.");
+          }
         }
       }
     } catch (error) {
