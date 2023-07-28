@@ -75,7 +75,7 @@ class _HomeClientScreenState extends State<HomeClientScreen> {
                     ),
                     child: ProfilePicture(
                       imageUrl: imageUrl ?? "",
-                      name: "user?.name" ?? "Guest",
+                      name: "user?.name",
                     ),
                   );
                 }

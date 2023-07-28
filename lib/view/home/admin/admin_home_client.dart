@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pet_buddy/constants/texts.dart';
 import 'package:pet_buddy/model/user_model.dart';
 import 'package:pet_buddy/utils/firebase_storage.dart';
 import 'package:pet_buddy/view/home/admin/admin_tab_bar.dart';
