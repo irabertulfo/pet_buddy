@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:pet_buddy/view/splash/splash-screen.dart';
 import "config/firebase_options.dart";
 
 void main() async {
@@ -7,6 +9,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await Permission.camera.request();
+  await Permission.storage.request();
 
   runApp(const MyApp());
 }
@@ -16,6 +21,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp();
+    return const MaterialApp(home: SplashScreen());
   }
 }
