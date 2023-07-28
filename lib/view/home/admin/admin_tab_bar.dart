@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pet_buddy/view/home/admin/appointment_calendar.dart/appointment_calendar.dart';
+import 'package:pet_buddy/view/home/admin/appointment_calendar/appointment_calendar.dart';
+import 'package:pet_buddy/view/home/admin/records_management/records_management_screen.dart';
 
 class AdminTabBar extends StatefulWidget {
   const AdminTabBar({Key? key}) : super(key: key);
@@ -34,15 +35,8 @@ class AdminTabBarState extends State<AdminTabBar>
               TabBarView(
                 controller: _tabController,
                 children: [
-                  Center(
-                    child: Text(
-                      "Records Management",
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ),
-                  const Center(
-                    child: AppointmentCalendar(),
-                  ),
+                  const RecordsManagementScreen(),
+                  const Center(child: AppointmentCalendar()),
                   Center(
                     child: Text(
                       "Transaction History",
