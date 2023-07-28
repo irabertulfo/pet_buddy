@@ -11,6 +11,7 @@ import 'package:pet_buddy/utils/firebase_storage.dart';
 import 'package:pet_buddy/utils/firestore_database.dart';
 import 'package:pet_buddy/utils/page_transition.dart';
 import 'package:pet_buddy/utils/toast.dart';
+import 'package:pet_buddy/view/home/admin/admin_home_client.dart';
 import 'package:pet_buddy/view/home/client/home_client_screen.dart';
 
 class LoginController {
@@ -49,7 +50,7 @@ class LoginController {
           Toast.show(context,
               "Login success! Welcome ${userSingleton.user?.firstName}.");
         } else if (userSingleton.user?.userType == "admin") {
-          PageTransition.pushRightNavigation(context, HomeClientScreen());
+          PageTransition.pushRightNavigation(context, const AdminHomeScreen());
           Toast.show(context,
               "Admin login success! Welcome ${userSingleton.user?.firstName}.");
         } else {
