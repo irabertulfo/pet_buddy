@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:pet_buddy/view/login/login_screen.dart';
 import 'package:pet_buddy/view/splash/splash-screen.dart';
 import "config/firebase_options.dart";
 
