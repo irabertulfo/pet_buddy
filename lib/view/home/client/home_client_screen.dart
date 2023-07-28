@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pet_buddy/constants/texts.dart';
 import 'package:pet_buddy/model/user_model.dart';
 import 'package:pet_buddy/utils/firebase_storage.dart';
+import 'package:pet_buddy/view/home/client/about-us/about_us_screen.dart';
 import 'package:pet_buddy/view/home/client/client_tab_bar.dart';
 import 'package:pet_buddy/view/home/client/profile-photo.dart';
 
 class HomeClientScreen extends StatefulWidget {
-  HomeClientScreen({Key? key}) : super(key: key);
+  const HomeClientScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeClientScreen> createState() => _HomeClientScreenState();
@@ -49,53 +50,50 @@ class _HomeClientScreenState extends State<HomeClientScreen> {
               future: imageUrlFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  // While the future is loading, show a circular progress indicator
-                  return DrawerHeader(
+                  return const DrawerHeader(
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      color: Colors.white,
                     ),
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  // If there's an error, display an error message
                   return DrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
                     ),
                     child: Text('Error: ${snapshot.error}'),
                   );
                 } else {
-                  // If the future completed successfully, build the drawer header with the profile picture
                   final imageUrl = snapshot.data;
                   return DrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
                     ),
                     child: ProfilePicture(
                       imageUrl: imageUrl ?? "",
-                      name: "user?.name",
+                      name: '${user!.firstName} ${user?.lastName}',
                     ),
                   );
                 }
               },
             ),
             ListTile(
-              title: Text('Item 1'),
+              title: const Text('About Us'),
               onTap: () {
-                // Handle item 1 tap
-                Navigator.pop(context); // Close the drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AboutUsScreen()),
+                );
               },
             ),
             ListTile(
-              title: Text('Item 2'),
+              title: const Text('Logout'),
               onTap: () {
-                // Handle item 2 tap
-                Navigator.pop(context); // Close the drawer
+                Navigator.pop(context);
               },
             ),
-            // Add more ListTile widgets for other drawer items as needed
           ],
         ),
       ),
