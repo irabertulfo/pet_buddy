@@ -32,10 +32,8 @@ class FirestoreDatabase {
       for (var doc in snapshot.docs) {
         final appointmentData = doc.data();
 
-        final userSnapshot = await _firestore
-            .collection(_userCollection)
-            .where('uid', isEqualTo: appointmentData['uid'])
-            .get();
+        final userSnapshot =
+            await _firestore.collection(_appointmentCollection).get();
 
         final userData = userSnapshot.docs.first.data();
 
@@ -49,6 +47,7 @@ class FirestoreDatabase {
 
       return appointmentList;
     } catch (e) {
+      print('Error fetching appointments: $e');
       return [];
     }
   }
@@ -61,10 +60,8 @@ class FirestoreDatabase {
       for (var doc in snapshot.docs) {
         final recordData = doc.data();
 
-        final userSnapshot = await _firestore
-            .collection(_userCollection)
-            .where('uid', isEqualTo: recordData['uid'])
-            .get();
+        final userSnapshot =
+            await _firestore.collection(_recordsCollection).get();
 
         final userData = userSnapshot.docs.first.data();
 
