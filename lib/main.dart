@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:pet_buddy/view/login/login_screen.dart';
+import 'package:pet_buddy/view/splash/splash-screen.dart';
 import "config/firebase_options.dart";
 
 void main() async {
@@ -21,8 +22,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: LoginScreen(),
-    );
+    return const MaterialApp(home: SplashScreen());
   }
 }
