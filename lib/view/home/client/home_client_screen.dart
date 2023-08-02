@@ -4,7 +4,7 @@ import 'package:pet_buddy/model/user_model.dart';
 import 'package:pet_buddy/utils/firebase_storage.dart';
 import 'package:pet_buddy/view/home/client/about-us/about_us_screen.dart';
 import 'package:pet_buddy/view/home/client/client_tab_bar.dart';
-import 'package:pet_buddy/view/home/client/profile-photo.dart';
+import 'package:pet_buddy/view/home/client/profile_photo.dart';
 
 class HomeClientScreen extends StatefulWidget {
   const HomeClientScreen({Key? key}) : super(key: key);
@@ -84,7 +84,8 @@ class _HomeClientScreenState extends State<HomeClientScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AboutUsScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const AboutUsScreen()),
                 );
               },
             ),

@@ -68,7 +68,7 @@ class SplashScreenState extends State<SplashScreen>
               opacity: _opacityAnimation,
               child: Text(
                 loginSubtitle,
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
           ],

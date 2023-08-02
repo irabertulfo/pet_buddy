@@ -3,7 +3,7 @@ import 'package:pet_buddy/model/user_model.dart';
 import 'package:pet_buddy/utils/firebase_storage.dart';
 import 'package:pet_buddy/view/home/admin/admin_tab_bar.dart';
 import 'package:pet_buddy/view/home/client/about-us/about_us_screen.dart';
-import 'package:pet_buddy/view/home/client/profile-photo.dart';
+import 'package:pet_buddy/view/home/client/profile_photo.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key}) : super(key: key);
@@ -83,7 +83,8 @@ class AdminHomeScreenState extends State<AdminHomeScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => AboutUsScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const AboutUsScreen()),
                 );
               },
             ),

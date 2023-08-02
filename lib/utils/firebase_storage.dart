@@ -22,8 +22,6 @@ class FirebaseStorageService {
       final downloadUrl = await storageReference.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      print('Error getting image download URL: $e');
-      // Return a placeholder URL or some default image URL in case of an error.
       return "YOUR_PLACEHOLDER_URL_OR_DEFAULT_IMAGE_URL";
     }
   }

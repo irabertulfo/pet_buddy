@@ -46,7 +46,7 @@ class LoginController {
         userSingleton.setUser(loggedInUser);
 
         if (userSingleton.user?.userType == "user") {
-          PageTransition.pushRightNavigation(context, HomeClientScreen());
+          PageTransition.pushRightNavigation(context, const HomeClientScreen());
           Toast.show(context,
               "Login success! Welcome ${userSingleton.user?.firstName}.");
         } else if (userSingleton.user?.userType == "admin") {
@@ -141,11 +141,13 @@ class LoginController {
           userSingleton.setUser(loggedInUser);
 
           if (userSingleton.user?.userType == "user") {
-            PageTransition.pushRightNavigation(context, HomeClientScreen());
+            PageTransition.pushRightNavigation(
+                context, const HomeClientScreen());
             Toast.show(context,
                 "Login success! Welcome ${userSingleton.user?.firstName}.");
           } else if (userSingleton.user?.userType == "admin") {
-            PageTransition.pushRightNavigation(context, HomeClientScreen());
+            PageTransition.pushRightNavigation(
+                context, const HomeClientScreen());
             Toast.show(context,
                 "Admin login success! Welcome ${userSingleton.user?.firstName}.");
           } else {
