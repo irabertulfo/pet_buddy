@@ -47,7 +47,6 @@ class FirestoreDatabase {
 
       return appointmentList;
     } catch (e) {
-      print('Error fetching appointments: $e');
       return [];
     }
   }

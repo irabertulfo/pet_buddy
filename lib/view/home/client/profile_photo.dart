@@ -7,6 +7,7 @@ class ProfilePicture extends StatelessWidget {
   final double nameFontSize;
 
   const ProfilePicture({
+    super.key,
     this.imageUrl = "",
     this.name = "",
     this.imageSize = 100.0,

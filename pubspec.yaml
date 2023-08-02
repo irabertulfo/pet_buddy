@@ -19,6 +19,7 @@ dependencies:
   permission_handler: ^10.4.3
   firebase_storage: ^11.2.5
   syncfusion_flutter_calendar: ^22.2.5
+  shared_preferences: ^2.2.0
 
 dev_dependencies:
   flutter_test:
