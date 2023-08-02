@@ -13,11 +13,30 @@ import 'package:pet_buddy/utils/page_transition.dart';
 import 'package:pet_buddy/utils/toast.dart';
 import 'package:pet_buddy/view/home/admin/admin_home_client.dart';
 import 'package:pet_buddy/view/home/client/home_client_screen.dart';
+import 'package:pet_buddy/view/login/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final UserSingleton userSingleton = UserSingleton();
+
+  void setUser(UserModel user, BuildContext context) {
+    userSingleton.setUser(user);
+
+    if (userSingleton.user?.userType == "user") {
+      PageTransition.pushRightNavigation(context, const HomeClientScreen());
+      Toast.show(
+          context, "Login success! Welcome ${userSingleton.user?.firstName}.");
+    } else if (userSingleton.user?.userType == "admin") {
+      PageTransition.pushRightNavigation(context, const AdminHomeScreen());
+      Toast.show(context,
+          "Admin login success! Welcome ${userSingleton.user?.firstName}.");
+    } else {
+      Toast.show(
+          context, "User error. User has incomplete details. Please sign-up.");
+    }
+  }
 
   Future<void> signInWithEmail(
       BuildContext context, String email, String password) async {
@@ -44,6 +63,7 @@ class LoginController {
         );
 
         userSingleton.setUser(loggedInUser);
+        saveUserDetailsToSharedPreferences(loggedInUser);
 
         if (userSingleton.user?.userType == "user") {
           PageTransition.pushRightNavigation(context, const HomeClientScreen());
@@ -161,9 +181,31 @@ class LoginController {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     await _auth.signOut();
     await _googleSignIn.signOut();
     userSingleton.clearUser();
+    clearUserDetailsFromSharedPreferences();
+
+    PageTransition.pushRightNavigation(context, const LoginScreen());
+  }
+
+  void clearUserDetailsFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('user_email');
+    prefs.remove('user_first_name');
+    prefs.remove('user_last_name');
+    prefs.remove('user_profile_image');
+    prefs.remove('user_type');
+  }
+
+  void saveUserDetailsToSharedPreferences(UserModel user) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('user_email', user.email);
+    prefs.setString('user_first_name', user.firstName);
+    prefs.setString('user_last_name', user.lastName);
+    prefs.setString('user_profile_image', user.profileImagePath);
+    prefs.setString('user_type', user.userType);
+    prefs.setString('user_uid', user.uid);
   }
 }

@@ -25,7 +25,7 @@ class PageTransition {
   }
 
   static void pushRightNavigation(BuildContext context, Widget page) {
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => page,
