@@ -32,8 +32,7 @@ class FirestoreDatabase {
       for (var doc in snapshot.docs) {
         final appointmentData = doc.data();
 
-        final userSnapshot =
-            await _firestore.collection(_appointmentCollection).get();
+        final userSnapshot = await _firestore.collection(_userCollection).get();
 
         final userData = userSnapshot.docs.first.data();
 
@@ -59,8 +58,7 @@ class FirestoreDatabase {
       for (var doc in snapshot.docs) {
         final recordData = doc.data();
 
-        final userSnapshot =
-            await _firestore.collection(_recordsCollection).get();
+        final userSnapshot = await _firestore.collection(_userCollection).get();
 
         final userData = userSnapshot.docs.first.data();
 
