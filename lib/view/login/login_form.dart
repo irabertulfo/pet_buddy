@@ -6,7 +6,8 @@ import '../../constants/texts.dart';
 import '../../utils/toast.dart';
 
 class LoginForm extends StatefulWidget {
-  const LoginForm({Key? key}) : super(key: key);
+  final Function(bool) setResetPasswordVisible;
+  const LoginForm({Key? key, required this.setResetPasswordVisible});
 
   @override
   LoginFormState createState() => LoginFormState();
@@ -90,7 +91,9 @@ class LoginFormState extends State<LoginForm> {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  widget.setResetPasswordVisible(true);
+                },
                 child: const Text(forgotPassword),
               ),
             ),
