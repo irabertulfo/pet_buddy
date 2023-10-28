@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_buddy/view/home/client/client_appointments.dart';
 
 class ClientTabBar extends StatefulWidget {
   const ClientTabBar({Key? key}) : super(key: key);
@@ -39,12 +40,7 @@ class ClientTabBarState extends State<ClientTabBar>
                       style: Theme.of(context).textTheme.displaySmall,
                     ),
                   ),
-                  Center(
-                    child: Text(
-                      "Appointments",
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ),
+                  Center(child: const ClientAppointment()),
                   Center(
                     child: Text(
                       "Chat Bot",
@@ -52,16 +48,6 @@ class ClientTabBarState extends State<ClientTabBar>
                     ),
                   ),
                 ],
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: FloatingActionButton(
-                    onPressed: () {},
-                    child: const Icon(Icons.add),
-                  ),
-                ),
               ),
             ],
           ),
