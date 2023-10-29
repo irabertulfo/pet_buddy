@@ -159,6 +159,12 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
   CalendarDataSource calendarDataSource = _AppointmentDataSource([]);
 
   @override
+  void initState() {
+    super.initState();
+    _updateCalendarData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>?>(
       future: firestoreDatabase.getAppointmentListWithUserInfo(),

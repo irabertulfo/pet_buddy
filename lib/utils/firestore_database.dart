@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_buddy/model/client_appointment_model.dart';
+import 'package:pet_buddy/model/inventory_model.dart';
 import 'package:pet_buddy/model/user_model.dart';
 
 class FirestoreDatabase {
@@ -8,6 +9,8 @@ class FirestoreDatabase {
   final String _userCollection = 'users';
   final String _appointmentCollection = 'appointments';
   final String _recordsCollection = 'records';
+  final String _inventoryCollection = 'inventory';
+  final String _categoryCollection = 'categories';
 
   Future<Map<String, dynamic>?> getUserInfoByUUID(String uid) async {
     try {
@@ -52,6 +55,7 @@ class FirestoreDatabase {
 
       return appointmentList;
     } catch (e) {
+      print(e.toString());
       return [];
     }
   }
@@ -165,6 +169,112 @@ class FirestoreDatabase {
       appointmentCollection.doc(id).update({'status': status});
     } catch (e) {
       return;
+    }
+  }
+
+  Future<List<CategoryModel>> getAllCategories() async {
+    List<CategoryModel> categories = [];
+
+    try {
+      final categoriesSnapshot =
+          await _firestore.collection(_categoryCollection).get();
+
+      CategoryModel placeholder = CategoryModel(id: '', name: 'All');
+      categories.add(placeholder);
+
+      for (var doc in categoriesSnapshot.docs) {
+        final categoryData = doc.data();
+
+        CategoryModel category =
+            CategoryModel(id: doc.id, name: categoryData['name']);
+
+        categories.add(category);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return categories;
+  }
+
+  Future<List<InventoryModel>> getAllInventory() async {
+    List<InventoryModel> items = [];
+    try {
+      final inventorySnapshot =
+          await _firestore.collection(_inventoryCollection).get();
+
+      for (var doc in inventorySnapshot.docs) {
+        final inventoryData = doc.data();
+
+        final categorySnapshot = await _firestore
+            .collection(_categoryCollection)
+            .doc(inventoryData['categoryId'])
+            .get();
+        final categoryData = categorySnapshot.data();
+
+        CategoryModel category = CategoryModel(
+            id: inventoryData['categoryId'], name: categoryData!['name']);
+
+        InventoryModel item = InventoryModel(
+            id: doc.id,
+            category: category,
+            name: inventoryData['name'],
+            stock: inventoryData['stock']);
+
+        items.add(item);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+
+    return items;
+  }
+
+  Future<void> updateItemStock(String id, String method) async {
+    try {
+      final inventorySnapshot =
+          await _firestore.collection(_inventoryCollection).doc(id).get();
+
+      if (inventorySnapshot.exists) {
+        final currentStock = inventorySnapshot.data()!['stock'];
+        int newStock;
+
+        if (method == 'add') {
+          newStock = currentStock + 1;
+        } else if (method == 'subtract') {
+          newStock = currentStock - 1;
+        } else {
+          print("Invalid method. Use 'add' or 'subtract'.");
+          return;
+        }
+
+        await _firestore.collection(_inventoryCollection).doc(id).update({
+          'stock': newStock,
+        });
+      } else {
+        print("Item with ID $id not found in the inventory.");
+      }
+    } catch (e) {
+      print(e.toString());
+      return;
+    }
+  }
+
+  Future<void> deleteItemInInventory(String id) async {
+    try {
+      final itemDoc = _firestore.collection(_inventoryCollection).doc(id);
+      await itemDoc.delete();
+    } catch (e) {
+      print('Error deleting item: $e');
+    }
+  }
+
+  Future<void> addItemToInventory(InventoryModel item) async {
+    try {
+      final inventoryCollection = _firestore.collection(_inventoryCollection);
+      await inventoryCollection.add(item.toMap());
+    } catch (e) {
+      print('Error adding item: $e');
     }
   }
 }
