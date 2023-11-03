@@ -22,11 +22,11 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          RecordsSearchBar(onFilter: _onFilter),
           Text(
             "Records History",
             style: Theme.of(context).textTheme.displaySmall,
           ),
+          RecordsSearchBar(onFilter: _onFilter),
           FutureBuilder<List<Map<String, dynamic>>?>(
             future: firestoreDatabase.getRecords(),
             builder: (context, snapshot) {

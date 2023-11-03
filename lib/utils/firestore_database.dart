@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:pet_buddy/model/client_appointment_model.dart';
 import 'package:pet_buddy/model/inventory_model.dart';
+import 'package:pet_buddy/model/records_model.dart';
 import 'package:pet_buddy/model/user_model.dart';
 
 class FirestoreDatabase {
@@ -24,6 +26,14 @@ class FirestoreDatabase {
       return userDocument;
     } catch (e) {
       return null;
+    }
+  }
+
+  Future<void> createRecord(RecordModel record) async {
+    try {
+      await _firestore.collection(_recordsCollection).add(record.toMap());
+    } catch (e) {
+      print(e.toString);
     }
   }
 
@@ -60,6 +70,46 @@ class FirestoreDatabase {
     }
   }
 
+  Future<UserModel?> getUserInfo(String uid) async {
+    CollectionReference userCollection =
+        FirebaseFirestore.instance.collection(_userCollection);
+
+    final snapshot = await userCollection.doc(uid).get();
+    final userData = snapshot.data()! as Map<String, dynamic>;
+
+    UserModel user = UserModel(
+        uid: uid,
+        email: userData['email'],
+        firstName: userData['firstName'],
+        lastName: userData['lastName'],
+        profileImagePath: userData['profileImagePath'],
+        userType: userData['userType']);
+
+    return user;
+  }
+
+  Future<ClientAppointmentModel?> getAppointmentDetails(String id) async {
+    try {
+      final snapshot =
+          await _firestore.collection(_appointmentCollection).doc(id).get();
+
+      final appointmentData = snapshot.data()!;
+
+      ClientAppointmentModel appointment = ClientAppointmentModel(
+          id: id,
+          dateTimeFrom: appointmentData['dateTimeFrom'].toDate(),
+          dateTimeTo: appointmentData['dateTimeTo'].toDate(),
+          petName: appointmentData['petName'],
+          status: appointmentData['status'],
+          uid: appointmentData['uid']);
+
+      return appointment;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getRecords() async {
     try {
       final snapshot = await _firestore.collection(_recordsCollection).get();
@@ -84,6 +134,29 @@ class FirestoreDatabase {
     } catch (e) {
       return [];
     }
+  }
+
+  Future<RecordModel> getRecordById(String id) async {
+    CollectionReference recordsCollection =
+        FirebaseFirestore.instance.collection(_recordsCollection);
+
+    final snapshot = await recordsCollection.doc(id).get();
+    final recordData = snapshot.data()! as Map<String, dynamic>;
+
+    RecordModel record = RecordModel(
+        id: id,
+        uid: recordData['uid']!,
+        date: recordData['date']!,
+        owner: recordData['owner']!,
+        diagnosis: recordData['diagnosis']!,
+        notes: recordData['notes']!,
+        petBreed: recordData['petBreed']!,
+        petName: recordData['petName']!,
+        service: recordData['service']!,
+        price: recordData['price']!,
+        paymentMethod: recordData['paymentMethod']!);
+
+    return record;
   }
 
   Future<void> createNewUser(UserModel newUser) async {

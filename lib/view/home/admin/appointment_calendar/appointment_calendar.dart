@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:pet_buddy/utils/firestore_database.dart';
+import 'package:pet_buddy/view/home/admin/appointment_calendar/complete_transaction.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:intl/intl.dart';
 
@@ -93,13 +94,35 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
                 else
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: _buildActionButton('Cancel Appointment', Colors.blue,
-                        () {
-                      firestoreDatabase.updateAppointmentStatus(
-                          selectedAppointmentID, 'cancelled');
-                      _updateCalendarData();
-                      Navigator.of(context).pop();
-                    }),
+                    child: Column(
+                      children: [
+                        _buildActionButton(
+                          'Mark as Complete',
+                          Colors.blueAccent,
+                          () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CompleteTransactionScreen(
+                                  appointmentID: selectedAppointmentID,
+                                  onReloadCalendar: _updateCalendarData(),
+                                );
+                              },
+                            ).then((value) {
+                              _updateCalendarData();
+                            });
+                          },
+                        ),
+                        SizedBox(height: 16.0),
+                        _buildActionButton(
+                            'Cancel Appointment', Colors.redAccent, () {
+                          firestoreDatabase.updateAppointmentStatus(
+                              selectedAppointmentID, 'cancelled');
+                          _updateCalendarData();
+                          Navigator.of(context).pop();
+                        }),
+                      ],
+                    ),
                   ),
               ],
             ),
