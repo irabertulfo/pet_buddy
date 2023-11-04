@@ -11,7 +11,8 @@ class RecordsSearchBar extends StatefulWidget {
 
 class RecordsSearchBarState extends State<RecordsSearchBar> {
   String _searchText = '';
-  String? _selectedFilter;
+  String? _selectedFilter = 'Owner';
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +28,10 @@ class RecordsSearchBarState extends State<RecordsSearchBar> {
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: TextField(
+                controller: searchController,
                 onChanged: (value) {
                   setState(() {
-                    _searchText = value;
+                    _searchText = searchController.text;
                   });
                   _applyFilter();
                 },
@@ -43,6 +45,7 @@ class RecordsSearchBarState extends State<RecordsSearchBar> {
                           onPressed: () {
                             setState(() {
                               _searchText = '';
+                              searchController.text = '';
                             });
                             _applyFilter();
                           },
