@@ -10,7 +10,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 
 class RecordsClientScreen extends StatefulWidget {
-  const RecordsClientScreen({super.key});
+  const RecordsClientScreen({Key? key}) : super(key: key);
 
   @override
   State<RecordsClientScreen> createState() => _RecordsClientScreenState();
@@ -28,6 +28,21 @@ class _RecordsClientScreenState extends State<RecordsClientScreen> {
       _filterText = searchText;
       _selectedFilter = selectedFilter;
     });
+  }
+
+  List<RecordModel> _filterRecords(List<RecordModel> records) {
+    if (_selectedFilter == "Pet Name") {
+      return records.where((record) {
+        return record.petName.toLowerCase().contains(_filterText.toLowerCase());
+      }).toList();
+    } else if (_selectedFilter == "Date") {
+      return records.where((record) {
+        final formattedDate =
+            '${record.date.month}/${record.date.day}/${record.date.year}';
+        return formattedDate.contains(_filterText);
+      }).toList();
+    }
+    return records;
   }
 
   @override
@@ -59,12 +74,13 @@ class _RecordsClientScreenState extends State<RecordsClientScreen> {
                     ),
                   );
                 } else {
-                  final filteredRecords = snapshot.data;
+                  final records = snapshot.data;
+                  final filteredRecords = _filterRecords(records!);
 
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: filteredRecords!.length,
+                    itemCount: filteredRecords.length,
                     itemBuilder: (context, index) {
                       final record = filteredRecords[index];
 
@@ -250,7 +266,7 @@ Future<void> _generateAndShowReceipt(
                   style: pw.TextStyle(fontSize: 12),
                 ),
                 pw.Text(
-                  'This serves as a valid receipt.',
+                  'This serves a valid receipt.',
                   style: pw.TextStyle(fontSize: 12),
                 ),
               ],

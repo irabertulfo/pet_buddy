@@ -91,41 +91,131 @@ class _ClientAppointmentState extends State<ClientAppointment> {
 
   void _showAddAppointmentDialog(BuildContext context) {
     TextEditingController petNameController = TextEditingController();
-    DateTime selectedStartDate = DateTime.now();
-    DateTime selectedEndDate = DateTime.now();
+    TextEditingController dateController = TextEditingController();
+    TextEditingController timeFromController = TextEditingController();
+    TextEditingController timeToController = TextEditingController();
+
+    DateTime selectedDate = DateTime.now();
+    TimeOfDay selectedTimeFrom = TimeOfDay.now();
+    TimeOfDay selectedTimeTo = TimeOfDay.now();
+
+    Future<void> selectDate(BuildContext context) async {
+      final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime.now(),
+        lastDate: DateTime(2101),
+      );
+      if (pickedDate != null && pickedDate != selectedDate) {
+        setState(() {
+          selectedDate = pickedDate;
+          dateController.text =
+              "${pickedDate.day.toString().padLeft(2, '0')}/${pickedDate.month.toString().padLeft(2, '0')}/${pickedDate.year.toString()}";
+        });
+      }
+    }
+
+    Future<void> selectTime(
+        BuildContext context, TimeOfDay selectedTime, String timeType) async {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: selectedTime,
+      );
+      if (pickedTime != null && pickedTime != selectedTime) {
+        setState(() {
+          // Format the selected time as "HH:mm" and set it to the respective text field
+          if (timeType == 'from') {
+            selectedTimeFrom = pickedTime;
+            timeFromController.text =
+                "${selectedTimeFrom.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
+          } else if (timeType == 'to') {
+            selectedTimeTo = pickedTime;
+            timeToController.text =
+                "${selectedTimeTo.hour.toString().padLeft(2, '0')}:${pickedTime.minute.toString().padLeft(2, '0')}";
+          }
+        });
+      }
+
+      print(selectedTimeFrom);
+      print(timeFromController.text);
+    }
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Add Appointment'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextField(
-                controller: petNameController,
-                decoration: const InputDecoration(labelText: 'Pet Name'),
-              ),
-              const SizedBox(height: 10),
-              DateTimePicker(
-                initialDate: selectedStartDate,
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2101),
-                labelText: 'Start Date and Time',
-                onDateTimeChanged: (date) {
-                  selectedStartDate = date;
-                },
-              ),
-              DateTimePicker(
-                initialDate: selectedEndDate,
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2101),
-                labelText: 'End Date and Time',
-                onDateTimeChanged: (date) {
-                  selectedEndDate = date;
-                },
-              ),
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                      0, 8, 0, 8), // Increased padding
+                  child: TextField(
+                    onTap: () => selectDate(context),
+                    readOnly: true,
+                    controller: dateController,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.calendar_month),
+                      labelText: 'Date',
+                      hintText: '',
+                      border: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(12), // Match border radius
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                  child: TextField(
+                    onTap: () => selectTime(context, selectedTimeFrom, 'from'),
+                    readOnly: true,
+                    controller: timeFromController,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.watch),
+                      labelText: 'Time From',
+                      hintText: '',
+                      border: OutlineInputBorder(
+                        borderRadius:
+                            BorderRadius.circular(12), // Match border radius
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                  child: TextField(
+                    onTap: () => selectTime(context, selectedTimeFrom, 'to'),
+                    readOnly: true,
+                    controller: timeToController,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.watch),
+                      labelText: 'Time To',
+                      hintText: '',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                  child: TextField(
+                    controller: petNameController,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.pets),
+                      labelText: 'Pet Name',
+                      hintText: 'e.g., Beymax',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           actions: <Widget>[
             TextButton(
@@ -138,18 +228,33 @@ class _ClientAppointmentState extends State<ClientAppointment> {
               child: const Text('Save'),
               onPressed: () {
                 ClientAppointmentModel newAppointment = ClientAppointmentModel(
-                    id: '',
-                    dateTimeFrom: selectedStartDate,
-                    dateTimeTo: selectedEndDate,
-                    petName: petNameController.text,
-                    status: 'pending',
-                    uid: user!.uid);
+                  id: '',
+                  dateTimeFrom: DateTime(
+                    selectedDate.year,
+                    selectedDate.month,
+                    selectedDate.day,
+                    selectedTimeFrom.hour,
+                    selectedTimeFrom.minute,
+                  ),
+                  dateTimeTo: DateTime(
+                    selectedDate.year,
+                    selectedDate.month,
+                    selectedDate.day,
+                    selectedTimeTo.hour,
+                    selectedTimeTo.minute,
+                  ),
+                  petName: petNameController.text,
+                  status: 'pending',
+                  uid: user!.uid,
+                );
 
                 firestore.addAppointment(newAppointment);
 
                 Navigator.of(context).pop();
                 Toast.show(
-                    context, "Appointment added. Wait for confirmation!");
+                  context,
+                  "Appointment added. Wait for confirmation!",
+                );
                 refreshData();
               },
             ),
