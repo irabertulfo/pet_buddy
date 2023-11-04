@@ -158,6 +158,38 @@ class FirestoreDatabase {
     return record;
   }
 
+  Future<List<RecordModel>?> getRecordsByUser(String uid) async {
+    List<RecordModel> records = [];
+
+    try {
+      final snapshot = await _firestore
+          .collection(_recordsCollection)
+          .where('uid', isEqualTo: uid)
+          .get();
+
+      for (var recordDoc in snapshot.docs) {
+        final recordData = recordDoc.data();
+
+        RecordModel record = RecordModel(
+            id: recordDoc.id,
+            uid: recordData['uid']!,
+            date: (recordData['date']! as Timestamp).toDate(),
+            owner: '',
+            diagnosis: recordData['diagnosis']!,
+            notes: recordData['notes']!,
+            petBreed: recordData['petBreed']!,
+            petName: recordData['petName']!,
+            service: recordData['service']!,
+            price: recordData['price']!,
+            paymentMethod: recordData['paymentMethod']!);
+
+        records.add(record);
+      }
+    } catch (e) {}
+
+    return records;
+  }
+
   Future<void> createNewUser(UserModel newUser) async {
     try {
       CollectionReference usersCollection =

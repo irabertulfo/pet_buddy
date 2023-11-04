@@ -23,8 +23,14 @@ class _ClientAppointmentState extends State<ClientAppointment> {
         await firestore.getAllAppointmentModelsByUser(user!.uid);
 
     if (refreshedAppointments != null) {
+      // Filter the appointments based on status
+      List<ClientAppointmentModel> filteredAppointments = refreshedAppointments
+          .where((appointment) =>
+              ['pending', 'accepted', 'cancelled'].contains(appointment.status))
+          .toList();
+
       setState(() {
-        appointments = refreshedAppointments;
+        appointments = filteredAppointments;
         isLoading = false;
       });
     }
@@ -42,15 +48,29 @@ class _ClientAppointmentState extends State<ClientAppointment> {
       children: <Widget>[
         RefreshIndicator(
           onRefresh: refreshData,
-          child: ListView.builder(
-            itemCount: appointments.length,
-            itemBuilder: (context, index) {
-              return AppointmentCard(
-                appointment: appointments[index],
-                onRefresh: refreshData,
-              );
-            },
-          ),
+          child: appointments.isEmpty
+              ? const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Text(
+                      'No appointments. You can set one by pressing the button below.',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: appointments.length,
+                  itemBuilder: (context, index) {
+                    return AppointmentCard(
+                      appointment: appointments[index],
+                      onRefresh: refreshData,
+                    );
+                  },
+                ),
         ),
         Positioned(
           bottom: 16.0,
@@ -61,7 +81,7 @@ class _ClientAppointmentState extends State<ClientAppointment> {
               onPressed: () {
                 _showAddAppointmentDialog(context);
               },
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
             ),
           ),
         ),
@@ -78,15 +98,15 @@ class _ClientAppointmentState extends State<ClientAppointment> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Appointment'),
+          title: const Text('Add Appointment'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               TextField(
                 controller: petNameController,
-                decoration: InputDecoration(labelText: 'Pet Name'),
+                decoration: const InputDecoration(labelText: 'Pet Name'),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               DateTimePicker(
                 initialDate: selectedStartDate,
                 firstDate: DateTime(2000),
@@ -109,13 +129,13 @@ class _ClientAppointmentState extends State<ClientAppointment> {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Save'),
+              child: const Text('Save'),
               onPressed: () {
                 ClientAppointmentModel newAppointment = ClientAppointmentModel(
                     id: '',
@@ -163,7 +183,7 @@ class AppointmentCard extends StatelessWidget {
         margin: const EdgeInsets.all(16.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
-          side: BorderSide(color: Colors.blue, width: 2.0),
+          side: const BorderSide(color: Colors.blue, width: 2.0),
         ),
         child: Container(
           padding: const EdgeInsets.all(16.0),
@@ -174,10 +194,10 @@ class AppointmentCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              const Row(
                 children: [
                   Icon(Icons.pets, color: Colors.blue, size: 36.0),
-                  const SizedBox(width: 10.0),
+                  SizedBox(width: 10.0),
                   Text(
                     'Appointment Details',
                     style: TextStyle(
@@ -276,7 +296,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
           title: Text(
             "${selectedDate.toLocal()}".split(' ')[0],
           ),
-          trailing: Icon(Icons.keyboard_arrow_down),
+          trailing: const Icon(Icons.keyboard_arrow_down),
           onTap: () async {
             DateTime? date = await showDatePicker(
                 context: context,
@@ -295,7 +315,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
           title: Text(
             "${selectedDate.toLocal()}".split(' ')[1],
           ),
-          trailing: Icon(Icons.keyboard_arrow_down),
+          trailing: const Icon(Icons.keyboard_arrow_down),
           onTap: () async {
             TimeOfDay? t = await showTimePicker(
                 context: context,

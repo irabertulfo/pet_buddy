@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_buddy/view/home/client/client_appointments.dart';
+import 'package:pet_buddy/view/home/client/records_screen.dart';
 
 class ClientTabBar extends StatefulWidget {
   const ClientTabBar({Key? key}) : super(key: key);
@@ -34,12 +35,7 @@ class ClientTabBarState extends State<ClientTabBar>
               TabBarView(
                 controller: _tabController,
                 children: [
-                  Center(
-                    child: Text(
-                      "Appointment History",
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ),
+                  Center(child: RecordsClientScreen()),
                   Center(child: const ClientAppointment()),
                   Center(
                     child: Text(
