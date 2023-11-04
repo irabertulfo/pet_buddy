@@ -53,7 +53,7 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
                     (status == 'pending')
                         ? 'Appointment Details'
                         : 'Scheduled Appointment',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -113,7 +113,7 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
                             });
                           },
                         ),
-                        SizedBox(height: 16.0),
+                        const SizedBox(height: 16.0),
                         _buildActionButton(
                             'Cancel Appointment', Colors.redAccent, () {
                           firestoreDatabase.updateAppointmentStatus(
@@ -138,14 +138,14 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18.0,
             color: Colors.white,
           ),
         ),
         Text(
           value,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
             color: Colors.white,
@@ -159,11 +159,11 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        primary: color,
+        backgroundColor: color,
       ),
       child: Text(
         label,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20.0,
           fontWeight: FontWeight.bold,
           color: Colors.white,
@@ -244,7 +244,7 @@ _AppointmentDataSource _getCalendarDataSource(List<Map<String, dynamic>> data) {
         color: color,
         startTimeZone: '',
         endTimeZone: '',
-        notes: '${id},${status}'));
+        notes: '$id,$status'));
   }
 
   return _AppointmentDataSource(appointments);

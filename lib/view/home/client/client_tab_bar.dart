@@ -35,8 +35,8 @@ class ClientTabBarState extends State<ClientTabBar>
               TabBarView(
                 controller: _tabController,
                 children: [
-                  Center(child: RecordsClientScreen()),
-                  Center(child: const ClientAppointment()),
+                  const Center(child: RecordsClientScreen()),
+                  const Center(child: ClientAppointment()),
                   Center(
                     child: Text(
                       "Chat Bot",

@@ -4,7 +4,6 @@ import 'package:pet_buddy/constants/texts.dart';
 import 'package:pet_buddy/controller/login/login_controller.dart';
 import 'package:pet_buddy/model/user_model.dart';
 import 'package:pet_buddy/utils/page_transition.dart';
-import 'package:pet_buddy/utils/toast.dart';
 import 'package:pet_buddy/view/login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -102,6 +101,7 @@ void checkLoggedInStatus(BuildContext context) async {
       userType: userType!,
     );
 
+    // ignore: use_build_context_synchronously
     loginController.setUser(loggedInUser, context);
   }
 }

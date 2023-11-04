@@ -56,7 +56,6 @@ class _CompleteTransactionScreenState extends State<CompleteTransactionScreen> {
 
   void handlePaymentMethodSelected(String? selectedMethod) {
     selectedPaymentMethod = selectedMethod;
-    print('Selected Payment Method: $selectedMethod');
   }
 
   @override
@@ -365,8 +364,7 @@ class ImageDialog extends StatelessWidget {
             child: Center(
               child: Image.asset(
                 'assets/images/gcash-qr.jpg',
-                fit: BoxFit
-                    .contain, // Ensure the image fits within the container
+                fit: BoxFit.contain,
               ),
             ),
           ),
@@ -384,8 +382,8 @@ class ImageDialog extends StatelessWidget {
                     "Go Back",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20, // Adjusted font size for a better look
-                      fontWeight: FontWeight.bold, // Added bold style
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],

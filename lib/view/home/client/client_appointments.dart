@@ -5,7 +5,7 @@ import 'package:pet_buddy/utils/firestore_database.dart';
 import 'package:pet_buddy/utils/toast.dart';
 
 class ClientAppointment extends StatefulWidget {
-  const ClientAppointment({Key? key});
+  const ClientAppointment({super.key});
 
   @override
   State<ClientAppointment> createState() => _ClientAppointmentState();
@@ -23,7 +23,6 @@ class _ClientAppointmentState extends State<ClientAppointment> {
         await firestore.getAllAppointmentModelsByUser(user!.uid);
 
     if (refreshedAppointments != null) {
-      // Filter the appointments based on status
       List<ClientAppointmentModel> filteredAppointments = refreshedAppointments
           .where((appointment) =>
               ['pending', 'accepted', 'cancelled'].contains(appointment.status))
@@ -123,7 +122,6 @@ class _ClientAppointmentState extends State<ClientAppointment> {
       );
       if (pickedTime != null && pickedTime != selectedTime) {
         setState(() {
-          // Format the selected time as "HH:mm" and set it to the respective text field
           if (timeType == 'from') {
             selectedTimeFrom = pickedTime;
             timeFromController.text =
@@ -135,9 +133,6 @@ class _ClientAppointmentState extends State<ClientAppointment> {
           }
         });
       }
-
-      print(selectedTimeFrom);
-      print(timeFromController.text);
     }
 
     showDialog(
@@ -150,8 +145,7 @@ class _ClientAppointmentState extends State<ClientAppointment> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                      0, 8, 0, 8), // Increased padding
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                   child: TextField(
                     onTap: () => selectDate(context),
                     readOnly: true,
@@ -161,8 +155,7 @@ class _ClientAppointmentState extends State<ClientAppointment> {
                       labelText: 'Date',
                       hintText: '',
                       border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(12), // Match border radius
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -178,8 +171,7 @@ class _ClientAppointmentState extends State<ClientAppointment> {
                       labelText: 'Time From',
                       hintText: '',
                       border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(12), // Match border radius
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
@@ -369,7 +361,7 @@ class DateTimePicker extends StatefulWidget {
   final String labelText;
   final ValueChanged<DateTime> onDateTimeChanged;
 
-  DateTimePicker({
+  const DateTimePicker({
     Key? key,
     required this.initialDate,
     required this.firstDate,
@@ -379,10 +371,10 @@ class DateTimePicker extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _DateTimePickerState createState() => _DateTimePickerState();
+  DateTimePickerState createState() => DateTimePickerState();
 }
 
-class _DateTimePickerState extends State<DateTimePicker> {
+class DateTimePickerState extends State<DateTimePicker> {
   DateTime selectedDate = DateTime.now();
 
   @override

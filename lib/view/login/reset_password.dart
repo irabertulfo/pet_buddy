@@ -56,7 +56,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
               decoration: const InputDecoration(
                 prefixIcon: Icon(
                   Icons.person_outline_outlined,
-                  // color: primaryColor,
                 ),
                 labelText: email,
                 hintText: 'juan.delacruz@email.com',
@@ -70,7 +69,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
               child: ElevatedButton(
                 onPressed:
                     _isLoading ? null : () => _performPasswordReset(context),
-                // style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
                 child: _isLoading
                     ? const CircularProgressIndicator()
                     : const Text('RESET PASSWORD'),
@@ -95,7 +93,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
                 child: Text(
                   back.toUpperCase(),
-                  // style: const TextStyle(color: primaryColor),
                 ),
               ),
             ),

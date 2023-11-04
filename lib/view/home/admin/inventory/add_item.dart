@@ -33,15 +33,14 @@ class _AddItemDialogState extends State<AddItemDialog> {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12), // Increased border radius
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
-              // Added container for better padding control
               padding: const EdgeInsets.all(16.0),
-              child: Text(
+              child: const Text(
                 'Add New Item',
                 style: TextStyle(
                   fontSize: 24.0,
@@ -51,38 +50,36 @@ class _AddItemDialogState extends State<AddItemDialog> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16.0), // Increased padding
+              padding: const EdgeInsets.all(16.0),
               child: TextField(
                 controller: nameTextController,
                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.list),
+                  prefixIcon: const Icon(Icons.list),
                   labelText: 'Item',
                   hintText: 'e.g., Syringe',
                   border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(12), // Match border radius
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16.0), // Increased padding
+              padding: const EdgeInsets.all(16.0),
               child: TextField(
                 keyboardType: TextInputType.number,
                 controller: stockTextController,
                 decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.attach_money), // Changed icon
+                  prefixIcon: const Icon(Icons.attach_money),
                   labelText: 'Stock',
                   hintText: '0-99999',
                   border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(12), // Match border radius
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16.0), // Increased padding
+              padding: const EdgeInsets.all(16.0),
               child: CupertinoPicker(
                 itemExtent: 70,
                 onSelectedItemChanged: (int index) {
@@ -95,14 +92,14 @@ class _AddItemDialogState extends State<AddItemDialog> {
                   return Center(
                     child: Text(
                       category.name,
-                      style: TextStyle(fontSize: 20.0),
+                      style: const TextStyle(fontSize: 20.0),
                     ),
                   );
                 }).toList(),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16.0), // Increased padding
+              padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
                 onPressed: () {
                   if (selectedCategory == null) {
@@ -126,7 +123,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                     Navigator.pop(context);
                   }
                 },
-                child: Text('ADD'),
+                child: const Text('ADD'),
               ),
             ),
           ],

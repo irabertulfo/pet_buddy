@@ -7,7 +7,7 @@ import '../../utils/toast.dart';
 
 class LoginForm extends StatefulWidget {
   final Function(bool) setResetPasswordVisible;
-  const LoginForm({Key? key, required this.setResetPasswordVisible});
+  const LoginForm({super.key, required this.setResetPasswordVisible});
 
   @override
   LoginFormState createState() => LoginFormState();

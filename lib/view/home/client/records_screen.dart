@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pet_buddy/model/records_model.dart';
 import 'package:pet_buddy/model/user_model.dart';
 import 'package:pet_buddy/utils/firestore_database.dart';
@@ -64,7 +63,7 @@ class _RecordsClientScreenState extends State<RecordsClientScreen> {
                 } else if (snapshot.hasError) {
                   return const Center(child: Text('An error occurred.'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(
+                  return const Center(
                     child: Text(
                       'No records found.',
                       style: TextStyle(
@@ -168,7 +167,7 @@ class RecordClientCard extends StatelessWidget {
           const SizedBox(width: 10.0),
           Expanded(
             child: Text(
-              title + ': ' + content,
+              '$title: $content',
               style: const TextStyle(
                 fontWeight: FontWeight.normal,
                 fontSize: 18.0,
@@ -190,16 +189,6 @@ Future<void> _generateAndShowReceipt(
       await rootBundle.load('assets/images/pet_buddy_logo.png');
   final Uint8List imageBytes = imageData.buffer.asUint8List();
 
-  // Define a function to create a styled title text
-  pw.Widget title(String text) {
-    return pw.Text(text,
-        style: pw.TextStyle(
-            fontWeight: pw.FontWeight.bold,
-            fontSize: 20,
-            color: PdfColors.blue));
-  }
-
-  // Define a function to create a styled information row
   pw.Widget infoRow(String label, String content) {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -207,7 +196,7 @@ Future<void> _generateAndShowReceipt(
         pw.Text(label,
             style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
         pw.SizedBox(width: 10),
-        pw.Text(content, style: pw.TextStyle(fontSize: 14)),
+        pw.Text(content, style: const pw.TextStyle(fontSize: 14)),
       ],
     );
   }
@@ -218,7 +207,6 @@ Future<void> _generateAndShowReceipt(
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            // Add your business logo
             pw.Center(
               child: pw.Image(
                 pw.MemoryImage(Uint8List.fromList(imageBytes)),
@@ -227,7 +215,6 @@ Future<void> _generateAndShowReceipt(
               ),
             ),
             pw.SizedBox(height: 20),
-            // Add your business details
             pw.Center(
               child: pw.Text('Pet Buddy Veterinary Clinic',
                   style: pw.TextStyle(
@@ -239,14 +226,12 @@ Future<void> _generateAndShowReceipt(
             pw.SizedBox(height: 20),
             pw.Divider(),
             pw.SizedBox(height: 20),
-            // Receipt Title
             pw.Center(
               child: pw.Text('Receipt for Record #${record.id.toUpperCase()}',
                   style: pw.TextStyle(
                       fontWeight: pw.FontWeight.bold, fontSize: 20)),
             ),
             pw.SizedBox(height: 20),
-            // Record Information
             infoRow('Date',
                 '${record.date.month}/${record.date.day}/${record.date.year}'),
             infoRow('Pet Name', record.petName),
@@ -263,11 +248,11 @@ Future<void> _generateAndShowReceipt(
               children: [
                 pw.Text(
                   'Thank you for choosing Pet Buddy Veterinary Clinic.',
-                  style: pw.TextStyle(fontSize: 12),
+                  style: const pw.TextStyle(fontSize: 12),
                 ),
                 pw.Text(
                   'This serves a valid receipt.',
-                  style: pw.TextStyle(fontSize: 12),
+                  style: const pw.TextStyle(fontSize: 12),
                 ),
               ],
             ),
@@ -281,19 +266,15 @@ Future<void> _generateAndShowReceipt(
 
   final pdfData = await pdf.save();
 
-  // Get the directory for saving PDF on the device
   final directory = await getExternalStorageDirectory();
   final path = '${directory!.path}/Receipt_${record.id}.pdf';
 
-  print(path);
-
-  // Save the PDF to the device
   final file = File(path);
   await file.writeAsBytes(pdfData);
 
-  // Show a message indicating the PDF was saved
+  // ignore: use_build_context_synchronously
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
     content: Text('PDF saved to $path'),
-    duration: Duration(seconds: 5),
+    duration: const Duration(seconds: 5),
   ));
 }

@@ -7,10 +7,10 @@ class InventoryScreen extends StatefulWidget {
   const InventoryScreen({Key? key}) : super(key: key);
 
   @override
-  _InventoryScreenState createState() => _InventoryScreenState();
+  InventoryScreenState createState() => InventoryScreenState();
 }
 
-class _InventoryScreenState extends State<InventoryScreen> {
+class InventoryScreenState extends State<InventoryScreen> {
   FirestoreDatabase firestoreDatabase = FirestoreDatabase();
   List<InventoryModel> inventoryItems = [];
   List<CategoryModel> categories = [];
@@ -59,109 +59,107 @@ class _InventoryScreenState extends State<InventoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        _searchText = value;
-                      });
-                    },
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Search',
-                      border: InputBorder.none,
-                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                      suffixIcon: _searchText.isNotEmpty
-                          ? IconButton(
-                              icon: const Icon(Icons.clear, color: Colors.grey),
-                              onPressed: () {
-                                setState(() {
-                                  _searchText = '';
-                                  searchController.text = '';
-                                });
-                              },
-                            )
-                          : null,
-                    ),
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      _searchText = value;
+                    });
+                  },
+                  controller: searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search',
+                    border: InputBorder.none,
+                    prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                    suffixIcon: _searchText.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, color: Colors.grey),
+                            onPressed: () {
+                              setState(() {
+                                _searchText = '';
+                                searchController.text = '';
+                              });
+                            },
+                          )
+                        : null,
                   ),
                 ),
               ),
-              if (categories.isNotEmpty)
-                DropdownButton<CategoryModel>(
-                  value: selectedCategory,
-                  onChanged: (CategoryModel? newCategory) {
-                    if (newCategory != null) {
-                      setState(() {
-                        selectedCategory = newCategory;
-                      });
-                    }
-                  },
-                  items: categories.map((CategoryModel category) {
-                    return DropdownMenuItem<CategoryModel>(
-                      value: category,
-                      child: Text(category.name),
-                    );
-                  }).toList(),
-                ),
-            ],
-          ),
-          Expanded(
-            child: Stack(children: [
-              RefreshIndicator(
-                onRefresh: () async {
-                  _loadInventoryItems();
+            ),
+            if (categories.isNotEmpty)
+              DropdownButton<CategoryModel>(
+                value: selectedCategory,
+                onChanged: (CategoryModel? newCategory) {
+                  if (newCategory != null) {
+                    setState(() {
+                      selectedCategory = newCategory;
+                    });
+                  }
                 },
-                child: ListView.builder(
-                  itemCount: getFilteredInventoryItems().length,
-                  itemBuilder: (context, index) {
-                    final item = getFilteredInventoryItems()[index];
-                    return InventoryItem(
-                        item: item, reloadInventoryItems: _loadInventoryItems);
+                items: categories.map((CategoryModel category) {
+                  return DropdownMenuItem<CategoryModel>(
+                    value: category,
+                    child: Text(category.name),
+                  );
+                }).toList(),
+              ),
+          ],
+        ),
+        Expanded(
+          child: Stack(children: [
+            RefreshIndicator(
+              onRefresh: () async {
+                _loadInventoryItems();
+              },
+              child: ListView.builder(
+                itemCount: getFilteredInventoryItems().length,
+                itemBuilder: (context, index) {
+                  final item = getFilteredInventoryItems()[index];
+                  return InventoryItem(
+                      item: item, reloadInventoryItems: _loadInventoryItems);
+                },
+              ),
+            ),
+            Positioned(
+              bottom: 16.0,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: FloatingActionButton(
+                  onPressed: () async {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AddItemDialog(
+                          categories: categories,
+                          onReloadInventory: _loadInventoryItems,
+                        );
+                      },
+                    );
                   },
+                  child: const Icon(Icons.add),
                 ),
               ),
-              Positioned(
-                bottom: 16.0,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AddItemDialog(
-                            categories: categories,
-                            onReloadInventory: _loadInventoryItems,
-                          );
-                        },
-                      );
-                    },
-                    child: Icon(Icons.add),
-                  ),
-                ),
-              ),
-            ]),
-          ),
-        ],
-      ),
+            ),
+          ]),
+        ),
+      ],
     );
   }
 }
 
 class InventoryItem extends StatelessWidget {
   const InventoryItem({
-    Key? key,
+    super.key,
     required this.item,
     required this.reloadInventoryItems,
   });
@@ -173,22 +171,22 @@ class InventoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     FirestoreDatabase firestoreDatabase = FirestoreDatabase();
 
-    Future<void> _showDeleteConfirmationDialog(BuildContext context) async {
+    Future<void> showDeleteConfirmationDialog(BuildContext context) async {
       return showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Delete Item"),
-            content: Text("Are you sure you want to delete this item?"),
+            title: const Text("Delete Item"),
+            content: const Text("Are you sure you want to delete this item?"),
             actions: <Widget>[
               TextButton(
-                child: Text("Cancel"),
+                child: const Text("Cancel"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               TextButton(
-                child: Text("Delete"),
+                child: const Text("Delete"),
                 onPressed: () {
                   firestoreDatabase.deleteItemInInventory(item.id);
                   reloadInventoryItems();
@@ -261,7 +259,7 @@ class InventoryItem extends StatelessWidget {
               color: Colors.red,
             ),
             onPressed: () {
-              _showDeleteConfirmationDialog(context);
+              showDeleteConfirmationDialog(context);
             },
           ),
         ],

@@ -82,14 +82,12 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
               .toList() ??
           [];
     } else if (_selectedFilter == "Date") {
-      // Assuming _filterText is a valid date string in the format you need
       return records
               ?.where((record) =>
                   record['date'].toDate().toString().contains(_filterText))
               .toList() ??
           [];
     } else {
-      // If no filter is selected, return all records
       return records ?? [];
     }
   }

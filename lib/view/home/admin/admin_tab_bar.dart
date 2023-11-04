@@ -35,10 +35,10 @@ class AdminTabBarState extends State<AdminTabBar>
             children: [
               TabBarView(
                 controller: _tabController,
-                children: [
-                  const RecordsManagementScreen(),
-                  const Center(child: AppointmentCalendar()),
-                  const InventoryScreen(),
+                children: const [
+                  RecordsManagementScreen(),
+                  Center(child: AppointmentCalendar()),
+                  InventoryScreen(),
                 ],
               ),
             ],

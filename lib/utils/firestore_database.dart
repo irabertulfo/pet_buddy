@@ -31,9 +31,8 @@ class FirestoreDatabase {
   Future<void> createRecord(RecordModel record) async {
     try {
       await _firestore.collection(_recordsCollection).add(record.toMap());
-    } catch (e) {
-      print(e.toString);
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   Future<List<Map<String, dynamic>>> getAppointmentListWithUserInfo() async {
@@ -64,7 +63,6 @@ class FirestoreDatabase {
 
       return appointmentList;
     } catch (e) {
-      print(e.toString());
       return [];
     }
   }
@@ -104,7 +102,6 @@ class FirestoreDatabase {
 
       return appointment;
     } catch (e) {
-      print(e.toString());
       return null;
     }
   }
@@ -185,6 +182,7 @@ class FirestoreDatabase {
 
         records.add(record);
       }
+      // ignore: empty_catches
     } catch (e) {}
 
     return records;
@@ -283,7 +281,7 @@ class FirestoreDatabase {
       final categoriesSnapshot =
           await _firestore.collection(_categoryCollection).get();
 
-      CategoryModel placeholder = CategoryModel(id: '', name: 'All');
+      CategoryModel placeholder = const CategoryModel(id: '', name: 'All');
       categories.add(placeholder);
 
       for (var doc in categoriesSnapshot.docs) {
@@ -294,9 +292,8 @@ class FirestoreDatabase {
 
         categories.add(category);
       }
-    } catch (e) {
-      print(e.toString());
-    }
+      // ignore: empty_catches
+    } catch (e) {}
 
     return categories;
   }
@@ -327,9 +324,8 @@ class FirestoreDatabase {
 
         items.add(item);
       }
-    } catch (e) {
-      print(e.toString());
-    }
+      // ignore: empty_catches
+    } catch (e) {}
 
     return items;
   }
@@ -348,18 +344,14 @@ class FirestoreDatabase {
         } else if (method == 'subtract') {
           newStock = currentStock - 1;
         } else {
-          print("Invalid method. Use 'add' or 'subtract'.");
           return;
         }
 
         await _firestore.collection(_inventoryCollection).doc(id).update({
           'stock': newStock,
         });
-      } else {
-        print("Item with ID $id not found in the inventory.");
-      }
+      } else {}
     } catch (e) {
-      print(e.toString());
       return;
     }
   }
@@ -368,17 +360,15 @@ class FirestoreDatabase {
     try {
       final itemDoc = _firestore.collection(_inventoryCollection).doc(id);
       await itemDoc.delete();
-    } catch (e) {
-      print('Error deleting item: $e');
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   Future<void> addItemToInventory(InventoryModel item) async {
     try {
       final inventoryCollection = _firestore.collection(_inventoryCollection);
       await inventoryCollection.add(item.toMap());
-    } catch (e) {
-      print('Error adding item: $e');
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 }

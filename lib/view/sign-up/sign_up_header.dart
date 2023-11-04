@@ -7,7 +7,7 @@ import 'package:pet_buddy/utils/photo_upload.dart';
 
 class SignUpHeader extends StatelessWidget {
   final Size size;
-  final void Function(String, File) onImageSelected; // Add File parameter
+  final void Function(String, File) onImageSelected;
 
   const SignUpHeader({
     Key? key,
@@ -38,6 +38,6 @@ class SignUpHeader extends StatelessWidget {
   }
 
   void _onImageSelected(String filename, File file) {
-    onImageSelected(filename, file); // Pass both the filename and the file
+    onImageSelected(filename, file);
   }
 }

@@ -14,12 +14,12 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   String? selectedImageFilename;
-  File? profileImageFile; // Add File variable
+  File? profileImageFile;
 
   void onImageSelected(String filename, File file) {
     setState(() {
       selectedImageFilename = filename;
-      profileImageFile = file; // Store the selected file in the state
+      profileImageFile = file;
     });
   }
 
@@ -40,8 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 SignUpForm(
                   selectedImageFilename: selectedImageFilename,
-                  profileImageFile:
-                      profileImageFile, // Pass the file to SignUpForm
+                  profileImageFile: profileImageFile,
                 ),
               ],
             ),
