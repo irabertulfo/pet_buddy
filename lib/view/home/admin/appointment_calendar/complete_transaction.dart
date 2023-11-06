@@ -199,7 +199,7 @@ class _CompleteTransactionScreenState extends State<CompleteTransactionScreen> {
                   controller: priceController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    prefix: const Text('₱ '),
+                    prefix: const Text('PHP '),
                     prefixIcon: const Icon(
                         IconData(0x20B1, fontFamily: 'MaterialIcons')),
                     labelText: 'Price',

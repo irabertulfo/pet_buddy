@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_buddy/controller/login/login_controller.dart';
 import 'package:pet_buddy/model/user_model.dart';
 import 'package:pet_buddy/utils/firebase_storage.dart';
+import 'package:pet_buddy/view/home/admin/admin_messages.dart';
 import 'package:pet_buddy/view/home/admin/admin_tab_bar.dart';
 import 'package:pet_buddy/view/home/client/about-us/about_us_screen.dart';
 import 'package:pet_buddy/view/home/client/profile_photo.dart';
@@ -92,6 +93,24 @@ class AdminHomeScreenState extends State<AdminHomeScreen> {
               _scaffoldKey.currentState?.openDrawer();
             },
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.message),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const Dialog(
+                      child: AdminInbox(),
+                    );
+                  },
+                );
+              },
+            ),
+            const SizedBox(
+              width: 10,
+            )
+          ],
         ),
         body: const AdminTabBar(),
         drawer: Drawer(

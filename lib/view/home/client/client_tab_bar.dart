@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_buddy/view/home/client/chat.dart';
 import 'package:pet_buddy/view/home/client/client_appointments.dart';
 import 'package:pet_buddy/view/home/client/records_screen.dart';
 
@@ -37,12 +38,7 @@ class ClientTabBarState extends State<ClientTabBar>
                 children: [
                   const Center(child: RecordsClientScreen()),
                   const Center(child: ClientAppointment()),
-                  Center(
-                    child: Text(
-                      "Chat Bot",
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ),
+                  Center(child: ChatScreen()),
                 ],
               ),
             ],

@@ -147,7 +147,7 @@ class RecordClientCard extends StatelessWidget {
               _buildInfoRow(Icons.healing, 'Diagnosis', record.diagnosis),
               _buildInfoRow(Icons.notes, 'Notes', record.notes),
               _buildInfoRow(Icons.medical_services, 'Service', record.service),
-              _buildInfoRow(Icons.attach_money, 'Price', '₱${record.price}'),
+              _buildInfoRow(Icons.attach_money, 'Price', 'PHP${record.price}'),
               _buildInfoRow(
                   Icons.payment, 'Payment Method', record.paymentMethod),
               const SizedBox(height: 20.0),

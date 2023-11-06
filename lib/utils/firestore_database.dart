@@ -2,16 +2,96 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pet_buddy/model/client_appointment_model.dart';
 import 'package:pet_buddy/model/inventory_model.dart';
 import 'package:pet_buddy/model/records_model.dart';
+import 'package:pet_buddy/model/user_messages.dart';
 import 'package:pet_buddy/model/user_model.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'dart:async';
 
 class FirestoreDatabase {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // ignore: non_constant_identifier_names
+  final FirebaseRTDB = FirebaseDatabase.instance.ref();
+  final FirebaseDatabase _database = FirebaseDatabase.instance;
+  final DatabaseReference _mainReference = FirebaseDatabase.instance.ref();
 
   final String _userCollection = 'users';
   final String _appointmentCollection = 'appointments';
   final String _recordsCollection = 'records';
   final String _inventoryCollection = 'inventory';
   final String _categoryCollection = 'categories';
+
+  Stream<List<UserModelWithMessages>> listenToRootNodes() {
+    final reference = _mainReference;
+    return reference.onValue.asyncExpand((event) async* {
+      final userModelsWithMessages = <UserModelWithMessages>[];
+      if (event.snapshot.value != null && event.snapshot.value is Map) {
+        final Map<dynamic, dynamic> values =
+            event.snapshot.value as Map<dynamic, dynamic>;
+
+        for (var uid in values.keys) {
+          final userModel = await getUserModelByUID(uid);
+          if (userModel != null) {
+            final messages = values[uid] as Map<dynamic, dynamic>;
+
+            userModelsWithMessages
+                .add(UserModelWithMessages(userModel, messages));
+          }
+        }
+
+        yield userModelsWithMessages;
+      }
+    });
+  }
+
+  DatabaseReference getUserMessagesReference(String userUid) {
+    return _database.ref().child(userUid);
+  }
+
+  void sendMessage(String senderUid, String message, String senderType) {
+    String? messageId = FirebaseRTDB.child(senderUid).push().key;
+
+    Map<String, dynamic> messageData = {
+      'sender': senderType,
+      'message': message,
+      'timestamp': ServerValue.timestamp,
+    };
+
+    FirebaseRTDB.child(senderUid).child(messageId!).set(messageData);
+  }
+
+  Stream<DatabaseEvent> listenToAdminMessages(String senderUid) {
+    final reference = FirebaseRTDB.child(senderUid);
+
+    return reference.onChildAdded;
+  }
+
+  Stream<DatabaseEvent> listenToUserMessages(String userId) {
+    return _mainReference.child('admin_messages/$userId').onValue;
+  }
+
+  Future<UserModel?> getUserModelByUID(String uid) async {
+    try {
+      final snapshot = await _firestore
+          .collection(_userCollection)
+          .where('uid', isEqualTo: uid)
+          .get();
+
+      final userDocument = snapshot.docs.first.data();
+
+      UserModel user = UserModel(
+          uid: uid,
+          email: userDocument['email'],
+          firstName: userDocument['firstName'],
+          lastName: userDocument['lastName'],
+          profileImagePath: userDocument['profileImagePath'],
+          userType: userDocument['userType']);
+
+      return user;
+    } catch (e) {
+      return null;
+    }
+  }
 
   Future<Map<String, dynamic>?> getUserInfoByUUID(String uid) async {
     try {
