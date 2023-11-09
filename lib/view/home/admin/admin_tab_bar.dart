@@ -57,7 +57,7 @@ class AdminTabBarState extends State<AdminTabBar>
             tabs: const [
               Tab(icon: Icon(Icons.receipt_outlined)),
               Tab(icon: Icon(Icons.calendar_month_outlined)),
-              Tab(icon: Icon(Icons.history_outlined)),
+              Tab(icon: Icon(Icons.inventory_2)),
             ],
             indicatorColor: Colors.white,
           ),

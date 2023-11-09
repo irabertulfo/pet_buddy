@@ -60,6 +60,9 @@ class ChatWidgetState extends State<ChatWidget> {
   @override
   void initState() {
     super.initState();
+    _addTypingAnimation();
+    _removeTypingAnimation();
+    _addBotMessage("Hello, I am BuddyBot. How can I help you?");
     adminMessagesSubscription = widget.adminMessagesStream.listen((event) {
       final DataSnapshot snapshot = event.snapshot;
       final Map<dynamic, dynamic>? message =
@@ -178,7 +181,7 @@ class ChatWidgetState extends State<ChatWidget> {
       }
     }
 
-    return "Sorry, I don't understand that question.";
+    return "Sorry, I don't understand that question. Please switch to live chat.";
   }
 
   void _scrollToBottom() {
