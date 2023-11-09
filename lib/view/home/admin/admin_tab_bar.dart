@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pet_buddy/view/home/admin/appointment_calendar/appointment_calendar.dart';
+import 'package:pet_buddy/view/home/admin/inventory/inventory.dart';
 import 'package:pet_buddy/view/home/admin/records_management/records_management_screen.dart';
 
 class AdminTabBar extends StatefulWidget {
@@ -34,15 +35,10 @@ class AdminTabBarState extends State<AdminTabBar>
             children: [
               TabBarView(
                 controller: _tabController,
-                children: [
-                  const RecordsManagementScreen(),
-                  const Center(child: AppointmentCalendar()),
-                  Center(
-                    child: Text(
-                      "Transaction History",
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ),
+                children: const [
+                  RecordsManagementScreen(),
+                  Center(child: AppointmentCalendar()),
+                  InventoryScreen(),
                 ],
               ),
             ],
@@ -61,7 +57,7 @@ class AdminTabBarState extends State<AdminTabBar>
             tabs: const [
               Tab(icon: Icon(Icons.receipt_outlined)),
               Tab(icon: Icon(Icons.calendar_month_outlined)),
-              Tab(icon: Icon(Icons.history_outlined)),
+              Tab(icon: Icon(Icons.inventory_2)),
             ],
             indicatorColor: Colors.white,
           ),

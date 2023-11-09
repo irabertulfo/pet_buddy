@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pet_buddy/view/home/client/chat.dart';
+import 'package:pet_buddy/view/home/client/client_appointments.dart';
+import 'package:pet_buddy/view/home/client/records_screen.dart';
 
 class ClientTabBar extends StatefulWidget {
   const ClientTabBar({Key? key}) : super(key: key);
@@ -33,35 +36,10 @@ class ClientTabBarState extends State<ClientTabBar>
               TabBarView(
                 controller: _tabController,
                 children: [
-                  Center(
-                    child: Text(
-                      "Appointment History",
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      "Appointments",
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      "Chat Bot",
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ),
-                  ),
+                  const Center(child: RecordsClientScreen()),
+                  const Center(child: ClientAppointment()),
+                  Center(child: ChatScreen()),
                 ],
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0),
-                  child: FloatingActionButton(
-                    onPressed: () {},
-                    child: const Icon(Icons.add),
-                  ),
-                ),
               ),
             ],
           ),

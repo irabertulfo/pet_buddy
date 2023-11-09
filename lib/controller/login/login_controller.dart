@@ -85,6 +85,17 @@ class LoginController {
     }
   }
 
+  Future<void> sendPasswordResetEmail(
+      BuildContext context, String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(
+        email: email,
+      );
+    } catch (error) {
+      Toast.show(context, error.toString());
+    }
+  }
+
   Future<void> signUp(
       BuildContext context,
       String email,

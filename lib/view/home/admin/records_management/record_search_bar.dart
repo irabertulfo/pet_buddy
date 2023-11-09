@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pet_buddy/model/user_model.dart';
 
 class RecordsSearchBar extends StatefulWidget {
   final Function(String, String?) onFilter;
@@ -10,8 +11,18 @@ class RecordsSearchBar extends StatefulWidget {
 }
 
 class RecordsSearchBarState extends State<RecordsSearchBar> {
+  UserModel? loggedInUser = UserSingleton().user;
   String _searchText = '';
   String? _selectedFilter;
+  TextEditingController searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    loggedInUser = UserSingleton().user;
+    _selectedFilter =
+        (loggedInUser!.userType == 'admin') ? 'Owner' : 'Pet Name';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +38,10 @@ class RecordsSearchBarState extends State<RecordsSearchBar> {
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: TextField(
+                controller: searchController,
                 onChanged: (value) {
                   setState(() {
-                    _searchText = value;
+                    _searchText = searchController.text;
                   });
                   _applyFilter();
                 },
@@ -43,6 +55,7 @@ class RecordsSearchBarState extends State<RecordsSearchBar> {
                           onPressed: () {
                             setState(() {
                               _searchText = '';
+                              searchController.text = '';
                             });
                             _applyFilter();
                           },
@@ -63,8 +76,11 @@ class RecordsSearchBarState extends State<RecordsSearchBar> {
               });
               _applyFilter();
             },
-            items: <String>['Owner', 'Pet Name', 'Date']
-                .map<DropdownMenuItem<String>>((String value) {
+            items: <String>[
+              if (loggedInUser!.userType != 'user') 'Owner',
+              'Pet Name',
+              'Date',
+            ].map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
                 child: Text(value, style: const TextStyle(color: Colors.black)),

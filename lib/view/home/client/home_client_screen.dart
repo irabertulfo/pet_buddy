@@ -36,20 +36,20 @@ class _HomeClientScreenState extends State<HomeClientScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Logout'),
-          content: Text('Are you sure you want to logout?'),
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Logout'),
+              child: const Text('Logout'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                _logout(context); // Call the logout function
+                Navigator.of(context).pop();
+                _logout(context);
               },
             ),
           ],
@@ -69,16 +69,16 @@ class _HomeClientScreenState extends State<HomeClientScreen> {
         return await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Confirm Exit'),
-            content: Text('Are you sure you want to exit the app?'),
+            title: const Text('Confirm Exit'),
+            content: const Text('Are you sure you want to exit the app?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text('Exit'),
+                child: const Text('Exit'),
               ),
             ],
           ),

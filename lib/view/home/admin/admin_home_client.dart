@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_buddy/controller/login/login_controller.dart';
 import 'package:pet_buddy/model/user_model.dart';
 import 'package:pet_buddy/utils/firebase_storage.dart';
+import 'package:pet_buddy/view/home/admin/admin_messages.dart';
 import 'package:pet_buddy/view/home/admin/admin_tab_bar.dart';
 import 'package:pet_buddy/view/home/client/about-us/about_us_screen.dart';
 import 'package:pet_buddy/view/home/client/profile_photo.dart';
@@ -34,20 +35,20 @@ class AdminHomeScreenState extends State<AdminHomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Logout'),
-          content: Text('Are you sure you want to logout?'),
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to logout?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Logout'),
+              child: const Text('Logout'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                _logout(context); // Call the logout function
+                Navigator.of(context).pop();
+                _logout(context);
               },
             ),
           ],
@@ -67,16 +68,16 @@ class AdminHomeScreenState extends State<AdminHomeScreen> {
         return await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Confirm Exit'),
-            content: Text('Are you sure you want to exit the app?'),
+            title: const Text('Confirm Exit'),
+            content: const Text('Are you sure you want to exit the app?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: Text('Exit'),
+                child: const Text('Exit'),
               ),
             ],
           ),
@@ -92,6 +93,24 @@ class AdminHomeScreenState extends State<AdminHomeScreen> {
               _scaffoldKey.currentState?.openDrawer();
             },
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.message),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const Dialog(
+                      child: AdminInbox(),
+                    );
+                  },
+                );
+              },
+            ),
+            const SizedBox(
+              width: 10,
+            )
+          ],
         ),
         body: const AdminTabBar(),
         drawer: Drawer(

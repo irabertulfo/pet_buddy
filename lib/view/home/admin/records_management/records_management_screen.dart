@@ -22,11 +22,11 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          RecordsSearchBar(onFilter: _onFilter),
           Text(
             "Records History",
             style: Theme.of(context).textTheme.displaySmall,
           ),
+          RecordsSearchBar(onFilter: _onFilter),
           FutureBuilder<List<Map<String, dynamic>>?>(
             future: firestoreDatabase.getRecords(),
             builder: (context, snapshot) {
@@ -35,12 +35,14 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
               } else if (snapshot.hasError || !snapshot.hasData) {
                 return const Center(child: Text('No records found.'));
               } else {
+                final filteredRecords = _applyFilters(snapshot.data);
+
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: snapshot.data!.length,
+                  itemCount: filteredRecords.length,
                   itemBuilder: (context, index) {
-                    final record = snapshot.data![index];
+                    final record = filteredRecords[index];
 
                     return RecordCard(
                       date: record['date'].toDate(),
@@ -50,6 +52,8 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
                       petName: record['petName'],
                       service: record['service'],
                       owner: '${record['firstName']} ${record['lastName']}',
+                      price: record['price'],
+                      paymentMethod: record['paymentMethod'],
                     );
                   },
                 );
@@ -61,14 +65,37 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
     );
   }
 
+  List<Map<String, dynamic>> _applyFilters(
+      List<Map<String, dynamic>>? records) {
+    if (_selectedFilter == "Owner") {
+      return records
+              ?.where((record) => '${record['firstName']} ${record['lastName']}'
+                  .toLowerCase()
+                  .contains(_filterText.toLowerCase()))
+              .toList() ??
+          [];
+    } else if (_selectedFilter == "Pet Name") {
+      return records
+              ?.where((record) => record['petName']
+                  .toLowerCase()
+                  .contains(_filterText.toLowerCase()))
+              .toList() ??
+          [];
+    } else if (_selectedFilter == "Date") {
+      return records
+              ?.where((record) =>
+                  record['date'].toDate().toString().contains(_filterText))
+              .toList() ??
+          [];
+    } else {
+      return records ?? [];
+    }
+  }
+
   void _onFilter(String searchText, String? selectedFilter) {
     setState(() {
       _filterText = searchText;
       _selectedFilter = selectedFilter;
     });
-
-    // You can now apply your filter logic to the records using the _filterText and _selectedFilter values.
-    // For example, you can call the FirestoreDatabase method with the filter parameters to get filtered records.
-    // firestoreDatabase.getFilteredRecords(_filterText, _selectedFilter);
   }
 }

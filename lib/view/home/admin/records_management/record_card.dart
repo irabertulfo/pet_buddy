@@ -8,6 +8,8 @@ class RecordCard extends StatelessWidget {
   final String petName;
   final String service;
   final String owner;
+  final double price;
+  final String paymentMethod;
 
   const RecordCard({
     Key? key,
@@ -18,6 +20,8 @@ class RecordCard extends StatelessWidget {
     required this.petName,
     required this.service,
     required this.owner,
+    required this.price,
+    required this.paymentMethod,
   }) : super(key: key);
 
   @override
@@ -124,6 +128,25 @@ class RecordCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 5.0),
+            Row(
+              children: [
+                const Icon(Icons.credit_card, size: 16.0),
+                const SizedBox(width: 5.0),
+                Flexible(
+                  child: Text('Price: PHP $price'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 5.0),
+            Row(
+              children: [
+                const Icon(Icons.phone_android_outlined, size: 16.0),
+                const SizedBox(width: 5.0),
+                Flexible(
+                  child: Text('Payment Method: $paymentMethod'),
+                ),
+              ],
+            ),
           ],
         ),
       ),
