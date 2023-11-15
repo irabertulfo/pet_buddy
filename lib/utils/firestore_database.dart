@@ -124,7 +124,10 @@ class FirestoreDatabase {
       for (var doc in snapshot.docs) {
         final appointmentData = doc.data();
 
-        final userSnapshot = await _firestore.collection(_userCollection).get();
+        final userSnapshot = await _firestore
+            .collection(_userCollection)
+            .where('uid', isEqualTo: appointmentData['uid'])
+            .get();
 
         appointmentData['documentID'] = doc.id;
 

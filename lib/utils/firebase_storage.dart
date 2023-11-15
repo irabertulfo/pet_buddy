@@ -22,7 +22,7 @@ class FirebaseStorageService {
       final downloadUrl = await storageReference.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      return "YOUR_PLACEHOLDER_URL_OR_DEFAULT_IMAGE_URL";
+      return "https://firebasestorage.googleapis.com/v0/b/pet-buddy-251d5.appspot.com/o/profile-images%2Fplaceholder.jpg?alt=media&token=7c934056-bc6a-4919-b5aa-5019fc018262";
     }
   }
 }
