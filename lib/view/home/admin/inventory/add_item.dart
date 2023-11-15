@@ -69,7 +69,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 keyboardType: TextInputType.number,
                 controller: stockTextController,
                 decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.attach_money),
+                  prefixIcon: const Icon(Icons.add_box),
                   labelText: 'Stock',
                   hintText: '0-99999',
                   border: OutlineInputBorder(

@@ -5,9 +5,9 @@ import '../../constants/texts.dart';
 
 class LoginHeader extends StatelessWidget {
   const LoginHeader({
-    super.key,
+    Key? key,
     required this.size,
-  });
+  }) : super(key: key);
 
   final Size size;
 
@@ -24,9 +24,12 @@ class LoginHeader extends StatelessWidget {
           loginTitle,
           style: Theme.of(context).textTheme.displaySmall,
         ),
-        Text(
-          loginSubtitle,
-          style: Theme.of(context).textTheme.bodyLarge,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            loginSubtitle,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
         ),
       ],
     );
