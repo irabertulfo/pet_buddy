@@ -1,6 +1,6 @@
 // Login Page
-const String loginTitle = "Welcome Back,";
-const String loginSubtitle = "Seemless veterinary scheduling app.";
+// const String loginTitle = "Welcome Back,";
+// const String loginSubtitle = "Seemless veterinary aid app.";
 
 const String email = "Email";
 const String password = "Password";

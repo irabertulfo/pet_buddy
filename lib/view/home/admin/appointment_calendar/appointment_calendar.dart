@@ -189,34 +189,114 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Map<String, dynamic>>?>(
-      future: firestoreDatabase.getAppointmentListWithUserInfo(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError || !snapshot.hasData) {
-          return const Center(child: Text('No data available.'));
-        } else {
-          return SfCalendar(
-            view: CalendarView.month,
-            monthViewSettings: const MonthViewSettings(showAgenda: true),
-            timeZone: 'Singapore Standard Time',
-            dataSource: calendarDataSource,
-            onLongPress: (CalendarLongPressDetails details) {
-              if (details.appointments != null &&
-                  details.appointments!.isNotEmpty) {
-                Appointment appointment = details.appointments![0];
-
-                selectedAppointmentID = appointment.notes!.split(',')[0];
-
-                _showDialog(appointment);
-              }
-            },
-          );
-        }
-      },
+    return Scaffold(
+      body: FutureBuilder<List<Map<String, dynamic>>?>(
+        future: firestoreDatabase.getAppointmentListWithUserInfo(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError || !snapshot.hasData) {
+            return const Center(child: Text('No data available.'));
+          } else {
+            return SfCalendar(
+              view: CalendarView.month,
+              monthViewSettings: const MonthViewSettings(showAgenda: true),
+              timeZone: 'Singapore Standard Time',
+              dataSource: calendarDataSource,
+              onLongPress: (CalendarLongPressDetails details) {
+                if (details.appointments != null &&
+                    details.appointments!.isNotEmpty) {
+                  Appointment appointment = details.appointments![0];
+                  selectedAppointmentID = appointment.notes!.split(',')[0];
+                  _showDialog(appointment);
+                }
+              },
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showInfoDialog();
+        },
+        child: const Icon(Icons.info),
+      ),
     );
   }
+
+  Future<void> _showInfoDialog() async {
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        elevation: 0.0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Appointment Calendar',
+                  style: const TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Navigate appointments with a long-press gesture!',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'For pending appointments, you can accept or reject them.',
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'For scheduled appointments, you can mark them as complete or cancel them.',
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Use the floating button to get more information about this calendar.',
+                    ),
+                    const SizedBox(height: 16), // Added more space here
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue,
+                ),
+                child: const Text('OK'),
+              ),
+              const SizedBox(height: 8), // Added space below the button
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
 }
 
 _AppointmentDataSource _getCalendarDataSource(List<Map<String, dynamic>> data) {
@@ -249,6 +329,7 @@ _AppointmentDataSource _getCalendarDataSource(List<Map<String, dynamic>> data) {
 
   return _AppointmentDataSource(appointments);
 }
+
 
 class MyWidget extends StatelessWidget {
   const MyWidget({super.key});

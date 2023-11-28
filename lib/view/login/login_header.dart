@@ -20,17 +20,6 @@ class LoginHeader extends StatelessWidget {
           image: const AssetImage(petBuddyLogoImage),
           height: size.height * 0.2,
         ),
-        Text(
-          loginTitle,
-          style: Theme.of(context).textTheme.displaySmall,
-        ),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            loginSubtitle,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-        ),
       ],
     );
   }

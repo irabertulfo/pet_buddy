@@ -67,13 +67,6 @@ class SplashScreenState extends State<SplashScreen>
                 height: size.height * 0.2,
               ),
             ),
-            FadeTransition(
-              opacity: _opacityAnimation,
-              child: Text(
-                loginSubtitle,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
           ],
         ),
       ),
