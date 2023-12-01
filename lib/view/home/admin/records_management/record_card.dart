@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class RecordCard extends StatelessWidget {
   final DateTime date;
   final String diagnosis;
@@ -133,7 +134,7 @@ class RecordCard extends StatelessWidget {
                 const Icon(Icons.credit_card, size: 16.0),
                 const SizedBox(width: 5.0),
                 Flexible(
-                  child: Text('Price: PHP $price'),
+                  child: Text('Price: PHP  $price'),
                 ),
               ],
             ),

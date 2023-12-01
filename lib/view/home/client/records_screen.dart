@@ -96,10 +96,17 @@ class _RecordsClientScreenState extends State<RecordsClientScreen> {
   }
 }
 
-class RecordClientCard extends StatelessWidget {
+class RecordClientCard extends StatefulWidget {
   final RecordModel record;
 
   const RecordClientCard({Key? key, required this.record}) : super(key: key);
+
+  @override
+  _RecordClientCardState createState() => _RecordClientCardState();
+}
+
+class _RecordClientCardState extends State<RecordClientCard> {
+  bool isInfoVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +119,13 @@ class RecordClientCard extends StatelessWidget {
       ),
       child: GestureDetector(
         onLongPress: () {
-          _generateAndShowReceipt(context, record);
+          _generateAndShowReceipt(context, widget.record);
+        },
+        onTap: () {
+          // Toggle visibility of the info text when tapped
+          setState(() {
+            isInfoVisible = !isInfoVisible;
+          });
         },
         child: Container(
           padding: const EdgeInsets.all(16.0),
@@ -129,7 +142,7 @@ class RecordClientCard extends StatelessWidget {
                   const SizedBox(width: 10.0),
                   Expanded(
                     child: Text(
-                      'Record# ${record.id.toUpperCase()}',
+                      'Record# ${widget.record.id.toUpperCase()}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20.0,
@@ -139,18 +152,28 @@ class RecordClientCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: 10.0), // Reduced the space here
               _buildInfoRow(Icons.date_range, 'Date',
-                  '${record.date.month}/${record.date.day}/${record.date.year}'),
-              _buildInfoRow(Icons.pets, 'Pet Name', record.petName),
-              _buildInfoRow(Icons.pets, 'Pet Breed', record.petBreed),
-              _buildInfoRow(Icons.healing, 'Diagnosis', record.diagnosis),
-              _buildInfoRow(Icons.notes, 'Notes', record.notes),
-              _buildInfoRow(Icons.medical_services, 'Service', record.service),
-              _buildInfoRow(Icons.attach_money, 'Price', 'PHP${record.price}'),
-              _buildInfoRow(
-                  Icons.payment, 'Payment Method', record.paymentMethod),
-              const SizedBox(height: 20.0),
+                  '${widget.record.date.month}/${widget.record.date.day}/${widget.record.date.year}'),
+              _buildInfoRow(Icons.pets, 'Pet Name', widget.record.petName),
+              _buildInfoRow(Icons.pets, 'Pet Breed', widget.record.petBreed),
+              _buildInfoRow(Icons.healing, 'Diagnosis', widget.record.diagnosis),
+              _buildInfoRow(Icons.notes, 'Notes', widget.record.notes),
+              _buildInfoRow(Icons.medical_services, 'Service', widget.record.service),
+              _buildInfoRow(Icons.attach_money, 'Price', 'PHP${widget.record.price}'),
+              _buildInfoRow(Icons.payment, 'Payment Method', widget.record.paymentMethod),
+              if (isInfoVisible) // Only show the info text when isInfoVisible is true
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const Icon(Icons.info, color: Colors.grey),
+                    const SizedBox(width: 5.0),
+                    const Text(
+                      'Long press to download receipt',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -180,6 +203,7 @@ class RecordClientCard extends StatelessWidget {
     );
   }
 }
+
 
 Future<void> _generateAndShowReceipt(
     BuildContext context, RecordModel record) async {

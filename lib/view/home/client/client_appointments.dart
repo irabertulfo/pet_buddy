@@ -18,6 +18,8 @@ class _ClientAppointmentState extends State<ClientAppointment> {
 
   UserModel? user = UserSingleton().user;
 
+  bool isInfoVisible = false; // Move the variable here
+
   Future<void> refreshData() async {
     List<ClientAppointmentModel>? refreshedAppointments =
         await firestore.getAllAppointmentModelsByUser(user!.uid);
@@ -33,12 +35,6 @@ class _ClientAppointmentState extends State<ClientAppointment> {
         isLoading = false;
       });
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    refreshData();
   }
 
   @override
@@ -84,6 +80,23 @@ class _ClientAppointmentState extends State<ClientAppointment> {
             ),
           ),
         ),
+        // New section for info icon
+        if (isInfoVisible) // Only show the info text when isInfoVisible is true
+          Positioned(
+            bottom: 70.0,
+            right: 16.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(Icons.info, color: Colors.grey),
+                SizedBox(width: 5.0),
+                Text(
+                  'Long press an appointment to cancel',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
       ],
     );
   }
@@ -257,7 +270,7 @@ class _ClientAppointmentState extends State<ClientAppointment> {
   }
 }
 
-class AppointmentCard extends StatelessWidget {
+class AppointmentCard extends StatefulWidget {
   final ClientAppointmentModel appointment;
   final VoidCallback onRefresh;
 
@@ -266,14 +279,26 @@ class AppointmentCard extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    FirestoreDatabase firestore = FirestoreDatabase();
+  _AppointmentCardState createState() => _AppointmentCardState();
+}
 
+class _AppointmentCardState extends State<AppointmentCard> {
+  FirestoreDatabase firestore = FirestoreDatabase();
+  bool isInfoVisible = false;
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () async {
-        firestore.deleteAppointment(appointment.id);
-        Toast.show(context, 'Appointment for ${appointment.petName} cancelled');
-        onRefresh();
+        firestore.deleteAppointment(widget.appointment.id);
+        Toast.show(context, 'Appointment for ${widget.appointment.petName} cancelled');
+        widget.onRefresh();
+      },
+      onTap: () {
+        // Toggle visibility of the info text when tapped
+        setState(() {
+          isInfoVisible = !isInfoVisible;
+        });
       },
       child: Card(
         elevation: 4.0,
@@ -291,29 +316,47 @@ class AppointmentCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 children: [
                   Icon(Icons.pets, color: Colors.blue, size: 36.0),
                   SizedBox(width: 10.0),
-                  Text(
-                    'Appointment Details',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.0,
-                      color: Colors.black,
+                  Expanded(
+                    child: Text(
+                      'Appointment Details',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20.0),
+              SizedBox(height: 20.0),
               _buildInfoRow(Icons.date_range,
-                  'Date: ${_formattedDate(appointment.dateTimeFrom)}'),
+                  'Date: ${_formattedDate(widget.appointment.dateTimeFrom)}'),
               _buildInfoRow(Icons.punch_clock,
-                  'Start: ${_formattedTime(appointment.dateTimeFrom)}'),
+                  'Start: ${_formattedTime(widget.appointment.dateTimeFrom)}'),
               _buildInfoRow(Icons.punch_clock,
-                  'End: ${_formattedTime(appointment.dateTimeTo)}'),
-              _buildInfoRow(Icons.pets, 'Pet Name: ${appointment.petName}'),
-              _buildInfoRow(Icons.flag_circle, 'Status: ${appointment.status}'),
+                  'End: ${_formattedTime(widget.appointment.dateTimeTo)}'),
+              _buildInfoRow(
+                  Icons.pets, 'Pet Name: ${widget.appointment.petName}'),
+              _buildInfoRow(
+                  Icons.flag_circle, 'Status: ${widget.appointment.status}'),
+              // Updated section for info icon with added space
+              SizedBox(height: 10.0),
+              if (isInfoVisible) // Only show the info text when isInfoVisible is true
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Icon(Icons.info, color: Colors.grey),
+                    SizedBox(width: 5.0),
+                    Text(
+                      'Long press to cancel appointment',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
@@ -406,31 +449,7 @@ class DateTimePickerState extends State<DateTimePicker> {
                 widget.onDateTimeChanged(date);
               });
             }
-          },
-        ),
-        ListTile(
-          title: Text(
-            "${selectedDate.toLocal()}".split(' ')[1],
-          ),
-          trailing: const Icon(Icons.keyboard_arrow_down),
-          onTap: () async {
-            TimeOfDay? t = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.fromDateTime(selectedDate));
-            if (t != null) {
-              DateTime newDate = DateTime(
-                selectedDate.year,
-                selectedDate.month,
-                selectedDate.day,
-                t.hour,
-                t.minute,
-              );
-              setState(() {
-                selectedDate = newDate;
-                widget.onDateTimeChanged(newDate);
-              });
-            }
-          },
+},
         ),
       ],
     );
