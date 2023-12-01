@@ -197,13 +197,15 @@ class FirestoreDatabase {
       for (var doc in snapshot.docs) {
         final recordData = doc.data();
 
-        final userSnapshot = await _firestore.collection(_userCollection).get();
-
-        final userData = userSnapshot.docs.first.data();
+        //using userSnapshot.doc.first.data() will always get the user record of the first record in firestore which is user Kaila,
+        //To fix uid in the records collection must be use to get the right users record
+        final userSnapshot = await _firestore.collection(_userCollection).doc(recordData['uid']).get();
+        
+        final userData = userSnapshot.data();
 
         Map<String, dynamic> combinedData = {
           ...recordData,
-          ...userData,
+          ...?userData,
         };
 
         recordList.add(combinedData);
