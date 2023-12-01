@@ -124,18 +124,20 @@ class FirestoreDatabase {
       for (var doc in snapshot.docs) {
         final appointmentData = doc.data();
 
-        final userSnapshot = await _firestore
-            .collection(_userCollection)
-            .where('uid', isEqualTo: appointmentData['uid'])
-            .get();
+        // final userSnapshot = await _firestore
+        //     .collection(_userCollection)
+        //     .where('uid', isEqualTo: appointmentData['uid'])
+        //     .get();
+
+        final userSnapshot = await _firestore.collection(_userCollection).doc(appointmentData['uid']).get();
 
         appointmentData['documentID'] = doc.id;
 
-        final userData = userSnapshot.docs.first.data();
+        final userData = userSnapshot.data();
 
         Map<String, dynamic> combinedData = {
           ...appointmentData,
-          ...userData,
+          ...?userData,
         };
 
         if (combinedData['status'] == 'pending' ||

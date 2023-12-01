@@ -49,7 +49,7 @@ class _CompleteTransactionScreenState extends State<CompleteTransactionScreen> {
     user = await firestoreDatabase.getUserInfo(appointment!.uid);
 
     dateController.text =
-        DateFormat('MM-dd-yyyy HH:mma').format(DateTime.now());
+        DateFormat('MM-dd-yyyy HH:mma').format(appointment!.dateTimeFrom);
     ownerController.text = '${user!.firstName} ${user!.lastName}';
     petNameController.text = appointment!.petName;
   }
@@ -243,7 +243,7 @@ class _CompleteTransactionScreenState extends State<CompleteTransactionScreen> {
                           RecordModel newRecord = RecordModel(
                               id: '',
                               uid: user!.uid,
-                              date: DateTime.now(),
+                              date: DateTime.parse(DateFormat("yyyy-MM-dd HH:mm").format(appointment!.dateTimeFrom)),
                               owner: ownerController.text,
                               diagnosis: diagnosisController.text,
                               notes: notesController.text,
@@ -264,7 +264,7 @@ class _CompleteTransactionScreenState extends State<CompleteTransactionScreen> {
                         RecordModel newRecord = RecordModel(
                           id: '',
                           uid: user!.uid,
-                          date: DateTime.now(),
+                          date: DateTime.parse(DateFormat("yyyy-MM-dd HH:mm").format(appointment!.dateTimeFrom)),
                           owner: ownerController.text,
                           diagnosis: diagnosisController.text,
                           notes: notesController.text,
