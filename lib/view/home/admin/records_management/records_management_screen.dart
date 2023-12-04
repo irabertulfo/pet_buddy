@@ -12,7 +12,8 @@ class RecordsManagementScreen extends StatefulWidget {
   const RecordsManagementScreen({Key? key}) : super(key: key);
 
   @override
-  State<RecordsManagementScreen> createState() => _RecordsManagementScreenState();
+  State<RecordsManagementScreen> createState() =>
+      _RecordsManagementScreenState();
 }
 
 class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
@@ -20,6 +21,10 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
   String _filterText = '';
   String? _selectedFilter;
   List<Map<String, dynamic>>? _allRecords; // Added field for unfiltered records
+
+  DateTime parseDate(String date) {
+    return DateTime.parse(date);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +51,10 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
 
                     // Apply filters to display in the main UI
                     final filteredRecords = _applyFilters(snapshot.data);
+
+                    filteredRecords.sort((a, b) => (b["date"] as Timestamp)
+                        .toDate()
+                        .compareTo((a["date"] as Timestamp).toDate()));
 
                     return ListView.builder(
                       shrinkWrap: true,
@@ -114,23 +123,23 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
       List<Map<String, dynamic>>? records) {
     if (_selectedFilter == "Owner") {
       return records
-          ?.where((record) => '${record['firstName']} ${record['lastName']}'
-              .toLowerCase()
-              .contains(_filterText.toLowerCase()))
-          .toList() ??
+              ?.where((record) => '${record['firstName']} ${record['lastName']}'
+                  .toLowerCase()
+                  .contains(_filterText.toLowerCase()))
+              .toList() ??
           [];
     } else if (_selectedFilter == "Pet Name") {
       return records
-          ?.where((record) => record['petName']
-              .toLowerCase()
-              .contains(_filterText.toLowerCase()))
-          .toList() ??
+              ?.where((record) => record['petName']
+                  .toLowerCase()
+                  .contains(_filterText.toLowerCase()))
+              .toList() ??
           [];
     } else if (_selectedFilter == "Date") {
       return records
-          ?.where((record) =>
-              _formattedDate(record['date']).contains(_filterText))
-          .toList() ??
+              ?.where((record) =>
+                  _formattedDate(record['date']).contains(_filterText))
+              .toList() ??
           [];
     } else {
       return records ?? [];
@@ -145,80 +154,81 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
   }
 
   void _showTransactions() {
-  print("_allRecords before fetching: $_allRecords"); // Add this line
+    print("_allRecords before fetching: $_allRecords"); // Add this line
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return FutureBuilder<List<Map<String, dynamic>>>(
-        // Use _allRecords instead of calling firestoreDatabase.getRecords() again
-        future: Future.value(_allRecords),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError || !snapshot.hasData) {
-            return const Center(child: Text('No records found.'));
-          } else {
-            // Set _allRecords after fetching
-            _allRecords = snapshot.data;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FutureBuilder<List<Map<String, dynamic>>>(
+          // Use _allRecords instead of calling firestoreDatabase.getRecords() again
+          future: Future.value(_allRecords),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError || !snapshot.hasData) {
+              return const Center(child: Text('No records found.'));
+            } else {
+              // Set _allRecords after fetching
+              _allRecords = snapshot.data;
 
-            return AlertDialog(
-              title: const Text('Transaction Information'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (var record in snapshot.data!)
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(8.0),
+              return AlertDialog(
+                title: const Text('Transaction Information'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (var record in snapshot.data!)
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        margin: const EdgeInsets.only(bottom: 12.0),
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Transaction Date: ${_formattedDate(record['date'])}',
+                              style: const TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              'Transaction Price: PHP ${record['price'].toString()}',
+                              style: const TextStyle(
+                                fontSize: 18.0,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      margin: const EdgeInsets.only(bottom: 12.0),
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Transaction Date: ${_formattedDate(record['date'])}',
-                            style: const TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 8.0),
-                          Text(
-                            'Transaction Price: PHP ${record['price'].toString()}',
-                            style: const TextStyle(
-                              fontSize: 18.0,
-                            ),
-                          ),
-                        ],
+                    const SizedBox(height: 16.0),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the dialog
+                        _generateAndShowTransactionReport(snapshot.data!);
+                      },
+                      child: const Text(
+                        'Save Transaction Report',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.blue,
+                        ),
                       ),
                     ),
-                  const SizedBox(height: 16.0),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close the dialog
-                      _generateAndShowTransactionReport(snapshot.data!);
-                    },
-                    child: const Text(
-                      'Save Transaction Report',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-        },
-      );
-    },
-  );
-}
+                  ],
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
 
-  void _generateAndShowTransactionReport(List<Map<String, dynamic>> records) async {
+  void _generateAndShowTransactionReport(
+      List<Map<String, dynamic>> records) async {
     final pdf = pdfLib.Document();
     double totalAmount = 0;
 
@@ -241,7 +251,8 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
           final tableHeaders = ['Date', 'Price'];
           final tableData = records.map<List<String>>((record) {
             final date = _formattedDate(record['date']);
-            final price = ' PHP ${(record['price'] as num).toStringAsFixed(2)}'; // Note the space before 'PHP'
+            final price =
+                ' PHP ${(record['price'] as num).toStringAsFixed(2)}'; // Note the space before 'PHP'
             totalAmount += record['price'] as double;
             return [date, price];
           }).toList();
