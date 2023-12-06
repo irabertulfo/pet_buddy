@@ -123,18 +123,6 @@ class _AdminInboxState extends State<AdminInbox> {
                                 final timeFormatted =
                                     DateFormat("h:mm a").format(time);
 
-                                // Show a SnackBar when a new message is received from the client
-                                if (sender == 'user') {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-  SnackBar(
-    content: Text(
-      'New Message from ${userModel.firstName} ${userModel.lastName}',
-    ),
-  ),
-);
-
-                                }
-
                                 return ListTile(
                                   contentPadding: EdgeInsets.zero,
                                   leading: CircleAvatar(
