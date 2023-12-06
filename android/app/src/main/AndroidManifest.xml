@@ -5,7 +5,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
-        android:label="pet.buddy"
+        android:label="Pet Buddy"
 
         android:icon="@mipmap/ic_launcher"
         android:name="androidx.multidex.MultiDexApplication">
