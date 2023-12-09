@@ -258,7 +258,7 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Navigate appointments with a long-press gesture!',
+                      'Navigate appointments with just a LONG-PRESS gesture.',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
@@ -270,10 +270,6 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
                     const SizedBox(height: 8),
                     const Text(
                       'For scheduled appointments, you can mark them as complete or cancel them.',
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Use the floating button to get more information about this calendar.',
                     ),
                     const SizedBox(height: 16), // Added more space here
                   ],

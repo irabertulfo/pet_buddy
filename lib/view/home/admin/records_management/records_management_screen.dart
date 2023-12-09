@@ -154,26 +154,27 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
   }
 
   void _showTransactions() {
-    print("_allRecords before fetching: $_allRecords"); // Add this line
+  print("_allRecords before fetching: $_allRecords");
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return FutureBuilder<List<Map<String, dynamic>>>(
-          // Use _allRecords instead of calling firestoreDatabase.getRecords() again
-          future: Future.value(_allRecords),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError || !snapshot.hasData) {
-              return const Center(child: Text('No records found.'));
-            } else {
-              // Set _allRecords after fetching
-              _allRecords = snapshot.data;
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return FutureBuilder<List<Map<String, dynamic>>>(
+        // Use _allRecords instead of calling firestoreDatabase.getRecords() again
+        future: Future.value(_allRecords),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError || !snapshot.hasData) {
+            return const Center(child: Text('No records found.'));
+          } else {
+            // Set _allRecords after fetching
+            _allRecords = snapshot.data;
 
-              return AlertDialog(
-                title: const Text('Transaction Information'),
-                content: Column(
+            return AlertDialog(
+              title: const Text('Transaction Information'),
+              content: SingleChildScrollView(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     for (var record in snapshot.data!)
@@ -204,106 +205,77 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
                         ),
                       ),
                     const SizedBox(height: 16.0),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Close the dialog
-                        _generateAndShowTransactionReport(snapshot.data!);
-                      },
-                      child: const Text(
-                        'Save Transaction Report',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
-              );
-            }
-          },
-        );
-      },
-    );
-  }
-
-  void _generateAndShowTransactionReport(
-      List<Map<String, dynamic>> records) async {
-    final pdf = pdfLib.Document();
-    double totalAmount = 0;
-
-    // Title, Table, and Total in one page
-    pdf.addPage(
-      pdfLib.Page(
-        build: (context) {
-          // Title
-          pdfLib.Widget titleWidget = pdfLib.Column(
-            crossAxisAlignment: pdfLib.CrossAxisAlignment.start,
-            children: [
-              pdfLib.Text('Transaction Report',
-                  style: pdfLib.TextStyle(
-                      fontWeight: pdfLib.FontWeight.bold, fontSize: 20)),
-              pdfLib.SizedBox(height: 10),
-            ],
-          );
-
-          // Table Header
-          final tableHeaders = ['Date', 'Price'];
-          final tableData = records.map<List<String>>((record) {
-            final date = _formattedDate(record['date']);
-            final price =
-                ' PHP ${(record['price'] as num).toStringAsFixed(2)}'; // Note the space before 'PHP'
-            totalAmount += record['price'] as double;
-            return [date, price];
-          }).toList();
-
-          // Table
-          pdfLib.Widget tableWidget = pdfLib.Table.fromTextArray(
-            headers: tableHeaders,
-            data: tableData,
-            cellAlignment: pdfLib.Alignment.center,
-            cellHeight: 30,
-            cellAlignments: {
-              0: pdfLib.Alignment.centerLeft,
-              1: pdfLib.Alignment.centerRight
-            },
-          );
-
-          // Total
-          pdfLib.Widget totalWidget = pdfLib.Column(
-            crossAxisAlignment: pdfLib.CrossAxisAlignment.start,
-            children: [
-              pdfLib.SizedBox(height: 20),
-              pdfLib.Text('Total Price: PHP ${totalAmount.toStringAsFixed(2)}',
-                  style: pdfLib.TextStyle(
-                      fontWeight: pdfLib.FontWeight.bold, fontSize: 18)),
-            ],
-          );
-
-          return pdfLib.Column(
-            children: [titleWidget, tableWidget, totalWidget],
-          );
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop(); // Close the dialog
+                    setState(() {
+                      _generateAndShowTransactionReport(snapshot.data!);
+                    });
+                  },
+                  child: const Text(
+                    'Save Transaction Report',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
         },
-      ),
-    );
+      );
+    },
+  );
+}
 
-    final directory = await getExternalStorageDirectory();
-    final file = File("${directory!.path}/transactions_report.pdf");
-    await file.writeAsBytes(await pdf.save());
+void _generateAndShowTransactionReport(List<Map<String, dynamic>> records) async {
+  final pdf = pdfLib.Document();
 
-    print("PDF Saved at: ${file.path}");
-
-    // Open the generated PDF
-    OpenFile.open(file.path);
-
-    // Show a notification
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Transaction Report saved to ${file.path}'),
-        duration: const Duration(seconds: 5),
-      ),
-    );
+  // Calculate total price
+  double totalPrice = 0;
+  for (var record in records) {
+    totalPrice += (record['price'] as num).toDouble();
   }
+
+  // Add content to the PDF
+  pdf.addPage(
+    pdfLib.MultiPage(
+      build: (context) => [
+        pdfLib.Header(level: 1, text: 'Transaction Report'),
+        pdfLib.Table.fromTextArray(
+          context: context,
+          headers: ['Transaction Date', 'Transaction Price'],
+          data: [
+            for (var record in records)
+              [ _formattedDate(record['date']), 'PHP ${record['price'].toString()}' ],
+          ],
+        ),
+        pdfLib.SizedBox(height: 12.0),
+        pdfLib.Row(
+          mainAxisAlignment: pdfLib.MainAxisAlignment.end,
+          children: [
+            pdfLib.Text('Total Price: PHP $totalPrice',
+                style: pdfLib.TextStyle(fontWeight: pdfLib.FontWeight.bold)),
+          ],
+        ),
+      ],
+    ),
+  );
+
+  // Save the PDF to a temporary file
+  final tempDir = await getTemporaryDirectory();
+  final tempFile = File('${tempDir.path}/transaction_report.pdf');
+  await tempFile.writeAsBytes(await pdf.save());
+
+  // Open the PDF using a PDF viewer
+  OpenFile.open(tempFile.path);
+}
+
 
   String _formattedDate(dynamic date) {
     if (date is DateTime) {
