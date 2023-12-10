@@ -172,40 +172,42 @@ class _RecordsManagementScreenState extends State<RecordsManagementScreen> {
             _allRecords = snapshot.data;
 
             return AlertDialog(
-              title: const Text('Transaction Information'),
+              title: const Text('Payment Transaction Information'),
               content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for (var record in snapshot.data!)
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blue),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        margin: const EdgeInsets.only(bottom: 12.0),
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Transaction Date: ${_formattedDate(record['date'])}',
-                              style: const TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
+                child: Center( // Wrap the Column with Center
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (var record in snapshot.data!)
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blue),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          margin: const EdgeInsets.only(bottom: 12.0),
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                'Transaction Date: ${_formattedDate(record['date'])}',
+                                style: const TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            Text(
-                              'Transaction Price: PHP ${record['price'].toString()}',
-                              style: const TextStyle(
-                                fontSize: 18.0,
+                              const SizedBox(height: 8.0),
+                              Text(
+                                'Transaction Price: PHP ${record['price'].toString()}',
+                                style: const TextStyle(
+                                  fontSize: 18.0,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    const SizedBox(height: 16.0),
-                  ],
+                      const SizedBox(height: 16.0),
+                    ],
+                  ),
                 ),
               ),
               actions: [

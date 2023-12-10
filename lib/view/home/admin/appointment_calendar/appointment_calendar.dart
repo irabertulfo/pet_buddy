@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:pet_buddy/utils/firestore_database.dart';
 import 'package:pet_buddy/view/home/admin/appointment_calendar/complete_transaction.dart';
@@ -24,113 +23,135 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
   String selectedAppointmentID = '';
 
   Future<void> _showDialog(Appointment appointment) async {
-    String status = appointment.notes!.split(',')[1];
-    String owner = appointment.subject;
-    String date = DateFormat.yMMMMd().format(appointment.startTime);
-    String timeFrom = DateFormat.jm().format(appointment.startTime);
-    String timeTo = DateFormat.jm().format(appointment.endTime);
+  String status = appointment.notes!.split(',')[1];
+  String owner = appointment.subject;
+  String date = DateFormat.yMMMMd().format(appointment.startTime);
+  String timeFrom = DateFormat.jm().format(appointment.startTime);
+  String timeTo = DateFormat.jm().format(appointment.endTime);
 
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        elevation: 0.0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.teal,
             borderRadius: BorderRadius.circular(12.0),
           ),
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.teal,
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    (status == 'pending')
-                        ? 'Appointment Details'
-                        : 'Scheduled Appointment',
-                    style: const TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  (status == 'pending')
+                      ? 'Appointment Details'
+                      : 'Scheduled Appointment',
+                  style: const TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: <Widget>[
+                    _buildInfoRow('Owner:', owner),
+                    _buildInfoRow('Date:', date),
+                    _buildInfoRow('Time:', '$timeFrom - $timeTo'),
+                  ],
+                ),
+              ),
+              if (status == 'pending')
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildActionButton('Reject', Colors.red, () {
+                        // Show box with rejection message
+                        firestoreDatabase.updateAppointmentStatus(
+                            selectedAppointmentID, 'rejected');
+                        _updateCalendarData();
+                        Navigator.of(context).pop();
+                        _showRejectionBox();
+                      }),
+                      _buildActionButton('Accept', Colors.green, () {
+                        firestoreDatabase.updateAppointmentStatus(
+                            selectedAppointmentID, 'accepted');
+                        _updateCalendarData();
+                        Navigator.of(context).pop();
+                      }),
+                    ],
+                  ),
+                )
+              else
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    children: <Widget>[
-                      _buildInfoRow('Owner:', owner),
-                      _buildInfoRow('Date:', date),
-                      _buildInfoRow('Time:', '$timeFrom - $timeTo'),
+                    children: [
+                      _buildActionButton(
+                        'Mark as Complete',
+                        Colors.blueAccent,
+                        () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CompleteTransactionScreen(
+                                appointmentID: selectedAppointmentID,
+                                onReloadCalendar: _updateCalendarData(),
+                              );
+                            },
+                          ).then((value) {
+                            _updateCalendarData();
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 16.0),
+                      _buildActionButton(
+                          'Cancel Appointment', Colors.redAccent, () {
+                        firestoreDatabase.updateAppointmentStatus(
+                            selectedAppointmentID, 'cancelled');
+                        _updateCalendarData();
+                        Navigator.of(context).pop();
+                      }),
                     ],
                   ),
                 ),
-                if (status == 'pending')
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildActionButton('Reject', Colors.red, () {
-                          firestoreDatabase.updateAppointmentStatus(
-                              selectedAppointmentID, 'rejected');
-                          _updateCalendarData();
-                          Navigator.of(context).pop();
-                        }),
-                        _buildActionButton('Accept', Colors.green, () {
-                          firestoreDatabase.updateAppointmentStatus(
-                              selectedAppointmentID, 'accepted');
-                          _updateCalendarData();
-                          Navigator.of(context).pop();
-                        }),
-                      ],
-                    ),
-                  )
-                else
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        _buildActionButton(
-                          'Mark as Complete',
-                          Colors.blueAccent,
-                          () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return CompleteTransactionScreen(
-                                  appointmentID: selectedAppointmentID,
-                                  onReloadCalendar: _updateCalendarData(),
-                                );
-                              },
-                            ).then((value) {
-                              _updateCalendarData();
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16.0),
-                        _buildActionButton(
-                            'Cancel Appointment', Colors.redAccent, () {
-                          firestoreDatabase.updateAppointmentStatus(
-                              selectedAppointmentID, 'cancelled');
-                          _updateCalendarData();
-                          Navigator.of(context).pop();
-                        }),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
+
+void _showRejectionBox() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Appointment Rejected'),
+        content: Text('Please contact the client for a reschedule.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   Widget _buildInfoRow(String title, String value) {
     return Row(
@@ -258,7 +279,7 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Navigate appointments with just a LONG-PRESS gesture.',
+                      'Navigate appointments with a long-press gesture!',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
@@ -270,6 +291,10 @@ class AppointmentCalendarState extends State<AppointmentCalendar> {
                     const SizedBox(height: 8),
                     const Text(
                       'For scheduled appointments, you can mark them as complete or cancel them.',
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Use the floating button to get more information about this calendar.',
                     ),
                     const SizedBox(height: 16), // Added more space here
                   ],
