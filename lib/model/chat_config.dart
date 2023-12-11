@@ -39,4 +39,10 @@ Map<String, String> chatConfig = {
       "For inquiries regarding special packages or discounts for extended boarding or recurring treatment, please feel free to reach out to our clinic directly.",
   "discount":
       "For inquiries regarding special packages or discounts for extended boarding or recurring treatment, please feel free to reach out to our clinic directly.",
+  "available time":
+      "Please use the Live Chat Mode to contact a clinic personnel for more inquiries about appointment.",
+  "good evening":
+      "Greetings! How can I help you today?",
+  "good morning":
+      "Greetings! How could I be any of assistance?",
 };
